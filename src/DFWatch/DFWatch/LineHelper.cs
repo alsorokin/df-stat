@@ -1,7 +1,19 @@
-﻿namespace Snay.DFStat.Watch
+﻿using System.Collections.Generic;
+
+namespace Snay.DFStat.Watch
 {
     public static class LineHelper
     {
+        public static Dictionary<LineType, string[]> PatternMappings
+        { get => new()
+            {
+                { LineType.Combat, CombatPatterns },
+                { LineType.DFHack, DFHackPatterns },
+                { LineType.AnnouncementGood, AnnouncementGoodPatterns },
+                { LineType.AnnouncementBad, AnnouncementBadPatterns }
+            };
+        }
+
         public static readonly string[] CombatPatterns = {
             "strikes",
             "misses",

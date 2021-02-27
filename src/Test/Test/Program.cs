@@ -1,11 +1,21 @@
 ﻿using Snay.DFStat.Watch;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Snay.DFStat.Test
 {
     class Program
     {
+        static Dictionary<LineType, bool> LineTypeFilter = new()
+        {
+            { LineType.General,          true  },
+            { LineType.Combat,           false },
+            { LineType.DFHack,           false },
+            { LineType.AnnouncementGood, true  },
+            { LineType.AnnouncementBad,  true  }
+        };
+
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
@@ -29,6 +39,9 @@ namespace Snay.DFStat.Test
 
         static void WriteLine(LineAddedArgs args)
         {
+            if (!LineTypeFilter[args.LnType])
+                return;
+
             Console.ResetColor();
             switch (args.LnType)
             {

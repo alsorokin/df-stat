@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -48,15 +49,11 @@ namespace Snay.DFStat.Watch
         {
             LineType type = LineType.General;
 
-            // TODO: get rid of this abomination
-            if (LineHelper.CombatPatterns.Any(l => Regex.IsMatch(line, l)))
-                type = LineType.Combat;
-            else if (LineHelper.DFHackPatterns.Any(l => Regex.IsMatch(line, l)))
-                type = LineType.DFHack;
-            else if (LineHelper.AnnouncementBadPatterns.Any(l => Regex.IsMatch(line, l)))
-                type = LineType.AnnouncementBad;
-            else if (LineHelper.AnnouncementGoodPatterns.Any(l => Regex.IsMatch(line, l)))
-                type = LineType.AnnouncementGood;
+            foreach (KeyValuePair<LineType, string[]> mapping in LineHelper.PatternMappings)
+            {
+                if (mapping.Value.Any(l => Regex.IsMatch(line, l)))
+                    type = mapping.Key;
+            }
 
             LineAdded?.Invoke(this, new LineAddedArgs(line, type));
         }
