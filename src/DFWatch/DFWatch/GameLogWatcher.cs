@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Snay.DFStat.Watch
@@ -32,7 +32,7 @@ namespace Snay.DFStat.Watch
                 {
                     s = sr.ReadLine();
                     if (s != null)
-                        LineAdded?.Invoke(this, new LineAddedArgs(s));
+                        HandleLine(s);
                     else
                         wh.WaitOne(1000);
                 }
@@ -42,8 +42,24 @@ namespace Snay.DFStat.Watch
         }
 
         public delegate void LineAddedHandler(object sender, LineAddedArgs e);
-
         public event LineAddedHandler LineAdded;
+
+        protected void HandleLine(string line)
+        {
+            LineType type = LineType.General;
+
+            // TODO: get rid of this abomination
+            if (LineHelper.CombatPatterns.Any(l => Regex.IsMatch(line, l)))
+                type = LineType.Combat;
+            else if (LineHelper.DFHackPatterns.Any(l => Regex.IsMatch(line, l)))
+                type = LineType.DFHack;
+            else if (LineHelper.AnnouncementBadPatterns.Any(l => Regex.IsMatch(line, l)))
+                type = LineType.AnnouncementBad;
+            else if (LineHelper.AnnouncementGoodPatterns.Any(l => Regex.IsMatch(line, l)))
+                type = LineType.AnnouncementGood;
+
+            LineAdded?.Invoke(this, new LineAddedArgs(line, type));
+        }
 
         protected static string GetGameLogPath(string workingDir)
         {

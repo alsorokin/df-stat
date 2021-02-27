@@ -2,11 +2,13 @@
 {
     public class LineAddedArgs
     {
-        public string LineText { get; }
+        public string LnText { get; }
+        public LineType LnType { get; }
 
-        public LineAddedArgs(string lineText) 
+        public LineAddedArgs(string lineText, LineType lineType) 
         { 
-            LineText = lineText; 
+            LnText = lineText;
+            LnType = lineType;
         }
     }
 }

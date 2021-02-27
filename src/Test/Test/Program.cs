@@ -14,7 +14,10 @@ namespace Snay.DFStat.Test
             {
                 var watcher = new GameLogWatcher("C:/Games/Dwarf Fortress");
                 Console.WriteLine($"Found gamelog: {watcher.GameLogFilePath}");
-                watcher.LineAdded += (sender, args) => Console.WriteLine(args.LineText);
+                watcher.LineAdded += (sender, args) =>
+                {
+                    WriteLine(args);
+                };
                 watcher.StartWatching();
             }
             catch (FileNotFoundException ex)
@@ -22,6 +25,29 @@ namespace Snay.DFStat.Test
                 Console.Error.WriteLine(ex.Message);
                 return;
             }
+        }
+
+        static void WriteLine(LineAddedArgs args)
+        {
+            Console.ResetColor();
+            switch (args.LnType)
+            {
+                case LineType.Combat:
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    break;
+                case LineType.DFHack:
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    break;
+                case LineType.AnnouncementGood:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
+                case LineType.AnnouncementBad:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    break;
+            }
+
+            Console.WriteLine($"({args.LnType}) {args.LnText}");
+            Console.ResetColor();
         }
     }
 }
