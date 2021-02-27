@@ -6,6 +6,16 @@
         Combat,
         AnnouncementGood,
         AnnouncementBad,
-        DFHack
+        DFHack,
+        Mandate,
+        Merchant,
+        War,
+        TimeOfYear,
+        Weather,
+        JobCancellation,
+        Masterpiece,
+        Birth,
+        Speech,
+        StrangeMood
     }
 }

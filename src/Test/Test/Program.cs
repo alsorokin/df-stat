@@ -39,7 +39,7 @@ namespace Snay.DFStat.Test
 
         static void WriteLine(LineAddedArgs args)
         {
-            if (!LineTypeFilter[args.LnType])
+            if (LineTypeFilter.ContainsKey(args.LnType) && !LineTypeFilter[args.LnType])
                 return;
 
             Console.ResetColor();

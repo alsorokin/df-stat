@@ -42,6 +42,17 @@ namespace Snay.DFStat.Watch
             // wh.Close();
         }
 
+        public void ScanOnce()
+        {
+            foreach (string line in File.ReadAllLines(this.GameLogFilePath))
+            {
+                if (line != null)
+                {
+                    HandleLine(line);
+                }
+            }
+        }
+
         public delegate void LineAddedHandler(object sender, LineAddedArgs e);
         public event LineAddedHandler LineAdded;
 
