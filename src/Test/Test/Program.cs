@@ -14,7 +14,7 @@ namespace Snay.DFStat.Test
             { LineType.DFHack,           false },
             { LineType.Merchant,         true  },
             { LineType.ForgottenBeast,   true  },
-            { LineType.JobCancellation,  false },
+            { LineType.JobCancellation,  true  },
         };
 
         static void Main(string[] args)

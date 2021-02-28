@@ -13,6 +13,8 @@ namespace Snay.DFStat.Watch
         public string GameLogFilePath { get; protected set; }
         public string GameLogDirectory { get => Path.GetDirectoryName(GameLogFilePath); }
 
+        private string lastLine;
+
         public GameLogWatcher(string workingDir = null)
         {
             GameLogFilePath = GetGameLogPath(!string.IsNullOrEmpty(workingDir) ? workingDir : Directory.GetCurrentDirectory());
@@ -58,6 +60,10 @@ namespace Snay.DFStat.Watch
 
         protected void HandleLine(string line)
         {
+            bool isRepeatedLine = Regex.IsMatch(line, LineHelper.RepeatedLinePattern);
+            if (isRepeatedLine)
+                line = lastLine;
+
             LineType type = LineType.General;
 
             foreach (KeyValuePair<LineType, string[]> mapping in LineHelper.PatternMappings)
@@ -66,6 +72,8 @@ namespace Snay.DFStat.Watch
                     type = mapping.Key;
             }
 
+            if (!isRepeatedLine)
+                lastLine = line;
             LineAdded?.Invoke(this, new LineAddedArgs(line, type));
         }
 

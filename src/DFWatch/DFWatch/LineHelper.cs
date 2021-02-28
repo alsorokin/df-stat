@@ -31,7 +31,7 @@ namespace Snay.DFStat.Watch
         }
 
         // TODO: get rid of too general patterns, like "strikes" or "kicks"
-        public static readonly string[] CombatPatterns = {
+        private static readonly string[] CombatPatterns = {
             "strikes",
             "misses",
             "attacks",
@@ -92,13 +92,16 @@ namespace Snay.DFStat.Watch
             "breaks the grip of the (.+)'s (.+) on The (.+)'s (.+)\\.$",
         };
 
-        public static string[] StuffBreakingPatterns =
+        public const string RepeatedLinePattern =
+            @"^x(\d+)$";
+
+        private static string[] StuffBreakingPatterns =
         {
             "^The (.+) is ripped to shreds!$",
             "^The (.+) breaks!$",
         };
 
-        public static readonly string[] DFHackPatterns =
+        private static readonly string[] DFHackPatterns =
         {
             "is no longer rusty",
             "is now rusty",
@@ -107,12 +110,12 @@ namespace Snay.DFStat.Watch
             "has became (.+)\\.",
         };
 
-        public static readonly string[] AnnouncementBadPatterns =
+        private static readonly string[] AnnouncementBadPatterns =
         {
             ForgottenBeastHasComePattern,
         };
 
-        public static readonly string[] MerchantPatterns =
+        private static readonly string[] MerchantPatterns =
         {
             "caravan(.+) has arrived\\.$",
             "^Merchants have arrived and are unloading their goods\\.$",
@@ -120,13 +123,13 @@ namespace Snay.DFStat.Watch
             "^The merchants from (.+) have embarked on their journey.$",
         };
 
-        public static readonly string[] MandatesPatterns =
+        private static readonly string[] MandatesPatterns =
         {
             ConstructionMandatePattern,
             ExportsBannedMandatePattern,
         };
 
-        public static readonly string[] MasterpiecePatterns =
+        private static readonly string[] MasterpiecePatterns =
         {
             MasterpieceCookPattern,
             MasterpieceDyerPattern,
@@ -134,13 +137,13 @@ namespace Snay.DFStat.Watch
             MasterpieceImprovementPattern,
         };
 
-        public static readonly string[] MandatePatterns =
+        private static readonly string[] MandatePatterns =
         {
             MandateConstructionPattern,
             MandateBanGoodsPattern,
         };
 
-        public static readonly string[] StrangeMoodPatterns =
+        private static readonly string[] StrangeMoodPatterns =
         {
             "is taken by a fey mood!$",
             "withdraws from society\\.\\.\\.$",
@@ -149,78 +152,78 @@ namespace Snay.DFStat.Watch
             "has created (.+), a (.+)!",
         };
 
-        public static readonly string[] JobCancellationPatterns =
+        private static readonly string[] JobCancellationPatterns =
         {
             "(.+), (.+) cancels (.+): (.+)\\.",
         };
 
-        public static readonly string[] WarPatterns =
+        private static readonly string[] WarPatterns =
         {
             "^The enemy have come and are laying siege to the fortress\\.$",
             "^A vile force of darkness has arrived!$",
         };
 
-        public static readonly string[] OrderPatterns =
+        private static readonly string[] OrderPatterns =
         {
             "\\(\\d+\\) has been completed\\.$",
         };
 
-        public static readonly string[] OccupationPatterns =
+        private static readonly string[] OccupationPatterns =
         {
             "has become a (.+)\\.$",
         };
 
-        public static readonly string[] BirthDwarfPatterns =
+        private static readonly string[] BirthDwarfPatterns =
         {
             "^(.+), (.+) has given birth to (a girl|a boy|twins|triplets)\\.$",
         };
 
-        public static readonly string[] BirthAnimalPatterns =
+        private static readonly string[] BirthAnimalPatterns =
         {
             "has given birth to a (.+)\\.",
             "has given birth to (.+)s\\.",
         };
 
-        public static readonly string[] GrowthAnimalPatterns =
+        private static readonly string[] GrowthAnimalPatterns =
         {
             "^An animal has grown to become a (.+)\\.$",
         };
 
-        public static readonly string[] GrowthDwarfPatterns =
+        private static readonly string[] GrowthDwarfPatterns =
         {
             "(?<!An animal) has grown to become a (.+)\\.$",
         };
 
-        public static readonly string[] SlaughterPatterns =
+        private static readonly string[] SlaughterPatterns =
         {
             "has been slaughtered\\.$",
         };
 
-        public const string ForgottenBeastHasComePattern =
+        private const string ForgottenBeastHasComePattern =
             "^The Forgotten Beast (.+) has come!";
 
-        public const string ConstructionMandatePattern =
+        private const string ConstructionMandatePattern =
             "(.+) has mandated the construction of certain goods\\.";
 
-        public const string ExportsBannedMandatePattern =
+        private const string ExportsBannedMandatePattern =
             "(.+) has imposed a ban on certain exports\\.";
 
-        public const string MasterpieceDyerPattern =
+        private const string MasterpieceDyerPattern =
             "has dyed a masterpiece!$";
 
-        public const string MasterpieceCookPattern =
+        private const string MasterpieceCookPattern =
             "has cooked a masterpiece!$";
 
-        public const string MasterpieceGeneralPattern =
+        private const string MasterpieceGeneralPattern =
             "has created a masterpiece (.+)!$";
 
-        public const string MasterpieceImprovementPattern =
+        private const string MasterpieceImprovementPattern =
             "has improved (.+) masterfully!$";
 
-        public const string MandateConstructionPattern =
+        private const string MandateConstructionPattern =
             "has mandated the construction of certain goods\\.$";
 
-        public const string MandateBanGoodsPattern =
+        private const string MandateBanGoodsPattern =
             "has imposed a ban on certain exports\\.$";
     }
 }
