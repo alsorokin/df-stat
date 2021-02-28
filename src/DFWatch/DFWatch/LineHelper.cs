@@ -9,13 +9,19 @@ namespace Snay.DFStat.Watch
             get => new()
             {
                 { LineType.Combat, CombatPatterns },
+                { LineType.StuffBreaking, StuffBreakingPatterns },
                 { LineType.DFHack, DFHackPatterns },
-                { LineType.AnnouncementGood, AnnouncementGoodPatterns },
-                { LineType.AnnouncementBad, AnnouncementBadPatterns },
+                { LineType.Merchant, MerchantPatterns },
+                { LineType.ForgottenBeast, AnnouncementBadPatterns },
                 { LineType.Mandate, MandatesPatterns },
+                { LineType.Masterpiece, MasterpiecePatterns },
+                { LineType.StrangeMood, StrangeMoodPatterns },
+                { LineType.JobCancellation, JobCancellationPatterns },
+                { LineType.War, WarPatterns },
             };
         }
 
+        // TODO: get rid of too general patterns, like "strikes" or "kicks"
         public static readonly string[] CombatPatterns = {
             "strikes",
             "misses",
@@ -49,17 +55,32 @@ namespace Snay.DFStat.Watch
             "^The force bends",
             "^The force pulls",
             "^An artery has been opened",
+            "^A (.+) has been bruised",
             "^The force twists",
             "is propelled away",
             "^The (.+) slams into an obstacle",
             "^The (.+) looks sick",
             "^The (.+) vomits",
             "^The (.+) retches",
-            "is having trouble breathing",
+            "is having trouble breathing!$",
+            "is having more trouble breathing!$",
             "^The (.+) regains consciousness",
             "^The (.+) passes out from exhaustion",
-            "^A major artery in the (\\w+) has been opened by the attack!",
+            "^A major artery in the (\\w+) has been opened by the attack!$",
+            "^A tendon in the (.+) has been (.+)!$",
+            "^The (.+) pulls on the embedded (.+)\\.$",
+            "^The (.+) gains possession of the (.+)\\.$",
+            "^The (.+) loses hold of the",
+            "^The (.+) has lodged firmly in the wound!$",
+            "^The (.+) shakes the (.+) around by",
+            "^Many nerves have been severed!$",
+            "^The (.+) collapses and falls to the ground from over-exertion\\.$",
+        };
 
+        public static string[] StuffBreakingPatterns =
+        {
+            "^The (.+) is ripped to shreds!$",
+            "^The (.+) breaks!$",
         };
 
         public static readonly string[] DFHackPatterns =
@@ -67,35 +88,85 @@ namespace Snay.DFStat.Watch
             "is no longer rusty",
             "is now rusty",
             "is no longer very rusty",
-            "is now very rusty"
+            "is now very rusty",
         };
 
         public static readonly string[] AnnouncementBadPatterns =
         {
-            ForgottenBeastHasComePattern
+            ForgottenBeastHasComePattern,
         };
 
-        public static readonly string[] AnnouncementGoodPatterns =
+        public static readonly string[] MerchantPatterns =
         {
-            CaravanHasArrivedPattern
+            "caravan(.+) has arrived\\.$",
+            "^Merchants have arrived and are unloading their goods\\.$",
+            "^The merchants from (.+) will be leaving soon\\.$",
+            "^The merchants from (.+) have embarked on their journey.$",
         };
 
         public static readonly string[] MandatesPatterns =
         {
             ConstructionMandatePattern,
-            ExportsBannedMandatePattern
+            ExportsBannedMandatePattern,
+        };
+
+        public static readonly string[] MasterpiecePatterns =
+        {
+            MasterpieceCookPattern,
+            MasterpieceDyerPattern,
+            MasterpieceGeneralPattern,
+            MasterpieceImprovementPattern,
+        };
+
+        public static readonly string[] MandatePatterns =
+        {
+            MandateConstructionPattern,
+            MandateBanGoodsPattern,
+        };
+
+        public static readonly string[] StrangeMoodPatterns =
+        {
+            "withdraws from society\\.\\.\\.$",
+            "has claimed a (.+)\\.$",
+            "has begun a mysterious construction!$",
+            "has created (.+), a (.+)!",
+        };
+
+        public static readonly string[] JobCancellationPatterns =
+        {
+            "(.+), (.+) cancels (.+): (.+)\\.",
+        };
+
+        public static readonly string[] WarPatterns =
+        {
+            "^The enemy have come and are laying siege to the fortress\\.$",
         };
 
         public const string ForgottenBeastHasComePattern =
             "^The Forgotten Beast (.+) has come!";
-
-        public const string CaravanHasArrivedPattern =
-            "(.+)caravan(.+) has arrived\\.";
 
         public const string ConstructionMandatePattern =
             "(.+) has mandated the construction of certain goods\\.";
 
         public const string ExportsBannedMandatePattern =
             "(.+) has imposed a ban on certain exports\\.";
+
+        public const string MasterpieceDyerPattern =
+            "has dyed a masterpiece!$";
+
+        public const string MasterpieceCookPattern =
+            "has cooked a masterpiece!$";
+
+        public const string MasterpieceGeneralPattern =
+            "has created a masterpiece (.+)!$";
+
+        public const string MasterpieceImprovementPattern =
+            "has improved (.+) masterfully!$";
+
+        public const string MandateConstructionPattern =
+            "has mandated the construction of certain goods\\.$";
+
+        public const string MandateBanGoodsPattern =
+            "has imposed a ban on certain exports\\.$";
     }
 }

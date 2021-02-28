@@ -4,8 +4,7 @@
     {
         General,
         Combat,
-        AnnouncementGood,
-        AnnouncementBad,
+        ForgottenBeast,
         DFHack,
         Mandate,
         Merchant,
@@ -16,6 +15,7 @@
         Masterpiece,
         Birth,
         Speech,
-        StrangeMood
+        StrangeMood,
+        StuffBreaking,
     }
 }

@@ -12,8 +12,9 @@ namespace Snay.DFStat.Test
             { LineType.General,          true  },
             { LineType.Combat,           false },
             { LineType.DFHack,           false },
-            { LineType.AnnouncementGood, true  },
-            { LineType.AnnouncementBad,  true  }
+            { LineType.Merchant,         true  },
+            { LineType.ForgottenBeast,   true  },
+            { LineType.JobCancellation,  false },
         };
 
         static void Main(string[] args)
@@ -46,21 +47,37 @@ namespace Snay.DFStat.Test
             switch (args.LnType)
             {
                 case LineType.Combat:
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
                 case LineType.DFHack:
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
-                case LineType.AnnouncementGood:
-                    Console.ForegroundColor = ConsoleColor.Blue;
+                case LineType.War:
+                case LineType.ForgottenBeast:
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                    Console.ForegroundColor = ConsoleColor.Black;
                     break;
-                case LineType.AnnouncementBad:
+                case LineType.StuffBreaking:
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    break;
+                case LineType.Masterpiece:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    break;
+                case LineType.Mandate:
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    break;
+                case LineType.Merchant:
+                case LineType.StrangeMood:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LineType.JobCancellation:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
             }
 
-            Console.WriteLine($"({args.LnType}) {args.LnText}");
+            Console.Write($"({args.LnType}) {args.LnText}");
             Console.ResetColor();
+            Console.WriteLine();
         }
     }
 }
