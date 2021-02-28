@@ -75,12 +75,17 @@ namespace Snay.DFStat.Test
                 case LineType.JobCancellation:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
+                case LineType.BirthDwarf:
                 case LineType.GrowthDwarf:
                     Console.BackgroundColor = ConsoleColor.Green;
                     Console.ForegroundColor = ConsoleColor.Black;
                     break;
+                case LineType.BirthAnimal:
                 case LineType.GrowthAnimal:
                     Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                case LineType.Slaughter:
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     break;
             }
 

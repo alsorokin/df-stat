@@ -26,6 +26,7 @@ namespace Snay.DFStat.Watch
                 { LineType.Occupation, OccupationPatterns },
                 { LineType.GrowthDwarf, GrowthDwarfPatterns },
                 { LineType.GrowthAnimal, GrowthAnimalPatterns },
+                { LineType.Slaughter, SlaughterPatterns },
             };
         }
 
@@ -188,6 +189,11 @@ namespace Snay.DFStat.Watch
         public static readonly string[] GrowthDwarfPatterns =
         {
             "(?<!An animal) has grown to become a (.+)\\.$",
+        };
+
+        public static readonly string[] SlaughterPatterns =
+        {
+            "has been slaughtered\\.$",
         };
 
         public const string ForgottenBeastHasComePattern =
