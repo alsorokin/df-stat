@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Snay.DFStat.Test
 {
     class Program
     {
-        static Dictionary<LineType, bool> LineTypeFilter = new()
+        private static Dictionary<LineType, bool> LineTypeFilter = new()
         {
             { LineType.General,          true  },
             { LineType.Combat,           false },
@@ -17,19 +18,24 @@ namespace Snay.DFStat.Test
             { LineType.JobCancellation,  true  },
         };
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
             try
             {
-                var watcher = new GameLogWatcher("C:/Games/Dwarf Fortress");
+                GameLogWatcher watcher = new("C:/Games/Dwarf Fortress");
                 Console.WriteLine($"Found gamelog: {watcher.GameLogFilePath}");
                 watcher.LineAdded += (sender, args) =>
                 {
                     WriteLine(args);
                 };
+
+                StatCollector collector = new(watcher);
+
                 watcher.StartWatching();
+                //watcher.ScanOnce();
+                //WriteStats(collector);
             }
             catch (FileNotFoundException ex)
             {
@@ -38,7 +44,34 @@ namespace Snay.DFStat.Test
             }
         }
 
-        static void WriteLine(LineAddedArgs args)
+        private static void WriteStats(StatCollector collector)
+        {
+            int longestType = ((IEnumerable<LineType>)Enum.GetValues(typeof(LineType))).Max(lt => lt.ToString().Length);
+            Console.ResetColor();
+            Console.WriteLine("Stats:");
+            foreach (LineType lnType in Enum.GetValues(typeof(LineType)))
+            {
+                string spaces = string.Empty;
+                int spacesToAdd = longestType - lnType.ToString().Length;
+                for (int i = 0; i < spacesToAdd; i++)
+                    spaces += " ";
+
+                if (!collector.LineTypeCounts.ContainsKey(lnType))
+                    continue;
+
+                Console.WriteLine($"{lnType}:{spaces} {collector.LineTypeCounts[lnType]}");
+            }
+
+            string spacesForTotal = string.Empty;
+            int SpacesToAdd = longestType - 5; // "Total".Length == 5
+            for (int i = 0; i < SpacesToAdd; i++)
+                spacesForTotal += " ";
+
+            Console.WriteLine();
+            Console.WriteLine($"Total: {spacesForTotal}{collector.TotalLinesProcessed}");
+        }
+
+        private static void WriteLine(LineAddedArgs args)
         {
             if (LineTypeFilter.ContainsKey(args.LnType) && !LineTypeFilter[args.LnType])
                 return;
