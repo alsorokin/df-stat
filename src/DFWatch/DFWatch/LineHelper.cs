@@ -8,6 +8,10 @@ namespace Snay.DFStat.Watch
         {
             get => new()
             {
+                // Dwarf and animal birth scan order is important
+                { LineType.BirthDwarf, BirthDwarfPatterns },
+                { LineType.BirthAnimal, BirthAnimalPatterns },
+
                 { LineType.Combat, CombatPatterns },
                 { LineType.StuffBreaking, StuffBreakingPatterns },
                 { LineType.DFHack, DFHackPatterns },
@@ -18,6 +22,10 @@ namespace Snay.DFStat.Watch
                 { LineType.StrangeMood, StrangeMoodPatterns },
                 { LineType.JobCancellation, JobCancellationPatterns },
                 { LineType.War, WarPatterns },
+                { LineType.Order, OrderPatterns },
+                { LineType.Occupation, OccupationPatterns },
+                { LineType.GrowthDwarf, GrowthDwarfPatterns },
+                { LineType.GrowthAnimal, GrowthAnimalPatterns },
             };
         }
 
@@ -66,7 +74,7 @@ namespace Snay.DFStat.Watch
             "is having more trouble breathing!$",
             "^The (.+) regains consciousness",
             "^The (.+) passes out from exhaustion",
-            "^A major artery in the (\\w+) has been opened by the attack!$",
+            "^A major artery in the heart has been opened by the attack!$",
             "^A tendon in the (.+) has been (.+)!$",
             "^The (.+) pulls on the embedded (.+)\\.$",
             "^The (.+) gains possession of the (.+)\\.$",
@@ -75,6 +83,12 @@ namespace Snay.DFStat.Watch
             "^The (.+) shakes the (.+) around by",
             "^Many nerves have been severed!$",
             "^The (.+) collapses and falls to the ground from over-exertion\\.$",
+            "has entered a martial trance!$",
+            "has left the martial trance\\.$",
+            "latches on firmly!$",
+            "^A major artery has been opened by the attack!$",
+            "looks even more sick!$",
+            "breaks the grip of the (.+)'s (.+) on The (.+)'s (.+)\\.$",
         };
 
         public static string[] StuffBreakingPatterns =
@@ -89,6 +103,7 @@ namespace Snay.DFStat.Watch
             "is now rusty",
             "is no longer very rusty",
             "is now very rusty",
+            "has became (.+)\\.",
         };
 
         public static readonly string[] AnnouncementBadPatterns =
@@ -126,6 +141,7 @@ namespace Snay.DFStat.Watch
 
         public static readonly string[] StrangeMoodPatterns =
         {
+            "is taken by a fey mood!$",
             "withdraws from society\\.\\.\\.$",
             "has claimed a (.+)\\.$",
             "has begun a mysterious construction!$",
@@ -140,6 +156,38 @@ namespace Snay.DFStat.Watch
         public static readonly string[] WarPatterns =
         {
             "^The enemy have come and are laying siege to the fortress\\.$",
+            "^A vile force of darkness has arrived!$",
+        };
+
+        public static readonly string[] OrderPatterns =
+        {
+            "\\(\\d+\\) has been completed\\.$",
+        };
+
+        public static readonly string[] OccupationPatterns =
+        {
+            "has become a (.+)\\.$",
+        };
+
+        public static readonly string[] BirthDwarfPatterns =
+        {
+            "^(.+), (.+) has given birth to (a girl|a boy|twins|triplets)\\.$",
+        };
+
+        public static readonly string[] BirthAnimalPatterns =
+        {
+            "has given birth to a (.+)\\.",
+            "has given birth to (.+)s\\.",
+        };
+
+        public static readonly string[] GrowthAnimalPatterns =
+        {
+            "^An animal has grown to become a (.+)\\.$",
+        };
+
+        public static readonly string[] GrowthDwarfPatterns =
+        {
+            "(?<!An animal) has grown to become a (.+)\\.$",
         };
 
         public const string ForgottenBeastHasComePattern =

@@ -13,9 +13,15 @@
         Weather,
         JobCancellation,
         Masterpiece,
-        Birth,
+        BirthDwarf,
+        BirthAnimal,
         Speech,
         StrangeMood,
         StuffBreaking,
+        Order,
+        Occupation,
+        Slaughter,
+        GrowthDwarf,
+        GrowthAnimal,
     }
 }

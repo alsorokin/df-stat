@@ -49,6 +49,7 @@ namespace Snay.DFStat.Test
                 case LineType.Combat:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
+                case LineType.Occupation:
                 case LineType.DFHack:
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
@@ -60,6 +61,7 @@ namespace Snay.DFStat.Test
                 case LineType.StuffBreaking:
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
+                case LineType.Order:
                 case LineType.Masterpiece:
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     break;
@@ -72,6 +74,13 @@ namespace Snay.DFStat.Test
                     break;
                 case LineType.JobCancellation:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
+                    break;
+                case LineType.GrowthDwarf:
+                    Console.BackgroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    break;
+                case LineType.GrowthAnimal:
+                    Console.ForegroundColor = ConsoleColor.Green;
                     break;
             }
 
