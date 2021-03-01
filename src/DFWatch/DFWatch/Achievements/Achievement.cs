@@ -4,6 +4,7 @@ using System.Linq;
 namespace Snay.DFStat.Watch.Achievements
 {
     public delegate void NewStageUnlockedHandler(Achievement sender);
+    public delegate void ProgressChangedHandler(Achievement sender);
 
     public abstract class Achievement
     {
@@ -28,6 +29,7 @@ namespace Snay.DFStat.Watch.Achievements
                 int oldMaxProgress = MaxProgress;
                 int oldStage = Stage;
                 progress = value;
+                OnProgress();
 
                 if (value >= oldMaxProgress && oldStage != MaxStage)
                 {
@@ -40,6 +42,7 @@ namespace Snay.DFStat.Watch.Achievements
             this.Stage < MaxStage ? ProgressNeeded[Stage + 1] : ProgressNeeded[MaxStage];
         
         public event NewStageUnlockedHandler NewStageUnlocked;
+        public event ProgressChangedHandler ProgressChanged;
 
         protected abstract int[] ProgressNeeded { get; }
 
@@ -53,6 +56,11 @@ namespace Snay.DFStat.Watch.Achievements
         protected void OnNewStageUnlocked()
         {
             NewStageUnlocked?.Invoke(this);
+        }
+
+        protected void OnProgress()
+        {
+            ProgressChanged?.Invoke(this);
         }
     }
 }

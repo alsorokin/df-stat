@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using Console = Snay.DFstat.Test.Console;
+
 namespace Snay.DFStat.Test
 {
     class Program
@@ -29,12 +31,13 @@ namespace Snay.DFStat.Test
                 Console.WriteLine($"Found gamelog: {watcher.GameLogFilePath}");
                 watcher.LineAdded += (sender, args) =>
                 {
-                    WriteLine(args);
+                    HandleLineAdded(args);
                 };
 
                 StatCollector collector = new(watcher);
                 AchievementTracker tracker = new(watcher);
                 tracker.NewStageUnlocked += WriteNewStageUnlocked;
+                tracker.ProgressChanged += WriteProgressChanged;
 
                 //watcher.StartWatching();
                 watcher.ScanOnce();
@@ -50,25 +53,34 @@ namespace Snay.DFStat.Test
 
         private static void WriteNewStageUnlocked(Achievement sender)
         {
-            Console.ResetColor();
-            Console.BackgroundColor = ConsoleColor.DarkMagenta;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write($"Unlocked {sender.Name}, stage {sender.Stage}!");
+            ConsoleColor fore = ConsoleColor.Yellow;
+            ConsoleColor back = ConsoleColor.DarkMagenta;
+            Console.WriteLine();
+            WriteColoredLine($"Unlocked {sender.Name}, stage {sender.Stage}!", fore, back);
+            WriteColoredLine($"Progress to next stage: {sender.Progress} / {sender.MaxProgress}", fore, back);
+            Console.WriteLine();
+        }
 
-            Console.ResetColor();
+        private static void WriteProgressChanged(Achievement sender)
+        {
+            ConsoleColor fore = ConsoleColor.Yellow;
+            ConsoleColor back = ConsoleColor.DarkMagenta;
+            Console.WriteLine();
+            WriteColoredLine($"Progress changed for {sender.Name}, stage {sender.Stage}!", fore, back);
+            WriteColoredLine($"Progress: {sender.Progress} / {sender.MaxProgress}", fore, back);
             Console.WriteLine();
         }
 
         private static void WriteStats(StatCollector collector)
         {
-            int longestType = ((IEnumerable<LineType>)Enum.GetValues(typeof(LineType))).Max(lt => lt.ToString().Length);
+            int longestTypeName = ((IEnumerable<LineType>)Enum.GetValues(typeof(LineType))).Max(lt => lt.ToString().Length);
             ResetAndWriteLine();
-            Console.WriteLine("### Line stats ###");
+            Console.WriteLine("###   Line stats   ###");
             foreach (KeyValuePair<LineType, int> line in collector.LineTypeCounts.OrderByDescending(kv => kv.Value))
             {
 
                 string spaces = string.Empty;
-                int spacesToAdd = longestType - line.Key.ToString().Length;
+                int spacesToAdd = longestTypeName - line.Key.ToString().Length;
                 for (int i = 0; i < spacesToAdd; i++)
                     spaces += " ";
 
@@ -76,7 +88,7 @@ namespace Snay.DFStat.Test
             }
 
             string spacesForTotal = string.Empty;
-            int SpacesToAdd = longestType - 5; // "Total".Length == 5
+            int SpacesToAdd = longestTypeName - 5; // "Total".Length == 5
             for (int i = 0; i < SpacesToAdd; i++)
                 spacesForTotal += " ";
 
@@ -87,25 +99,22 @@ namespace Snay.DFStat.Test
         private static void WriteAchievements(AchievementTracker tracker)
         {
             Console.WriteLine();
-            Console.Write("### Achievement stats ###");
+            Console.Write("###   Achievement stats   ###");
             tracker.Achievements.ForEach(WriteAchievement);
             Console.WriteLine();
         }
 
         private static void WriteAchievement(Achievement a)
         {
-            Console.ResetColor();
-            Console.BackgroundColor = ConsoleColor.Cyan;
-            Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine();
-            Console.WriteLine($"Name: {a.Name}");
-            Console.WriteLine($"Description: {a.Description}");
-            Console.WriteLine($"Stage: {a.Stage} / {a.MaxStage}");
-            Console.Write($"Progress: {a.Progress} / {a.MaxProgress}");
-            ResetAndWriteLine();
+            ConsoleColor fore = ConsoleColor.DarkMagenta;
+            ConsoleColor back = ConsoleColor.Cyan;
+            WriteColoredLine($"Name: {a.Name}", fore, back);
+            WriteColoredLine($"Description: {a.Description}", fore, back);
+            WriteColoredLine($"Stage: {a.Stage} / {a.MaxStage}", fore, back);
+            WriteColoredLine($"Progress: {a.Progress} / {a.MaxProgress}", fore, back);
         }
 
-        private static void WriteLine(LineAddedArgs args)
+        private static void HandleLineAdded(LineAddedArgs args)
         {
             if (LineTypeFilter.ContainsKey(args.LnType) && !LineTypeFilter[args.LnType])
                 return;
@@ -158,6 +167,19 @@ namespace Snay.DFStat.Test
 
             Console.Write($"({args.LnType}) {args.LnText}");
             ResetAndWriteLine();
+        }
+
+        private static void WriteColoredLine(string text, ConsoleColor? foregroundColor = null, ConsoleColor? backgroundColor = null)
+        {
+            Console.ResetColor();
+            if (foregroundColor != null)
+                Console.ForegroundColor = foregroundColor.Value;
+            if (backgroundColor != null)
+                Console.BackgroundColor = backgroundColor.Value;
+
+            Console.Write(text);
+            Console.ResetColor();
+            Console.WriteLine();
         }
 
         private static void ResetAndWriteLine()

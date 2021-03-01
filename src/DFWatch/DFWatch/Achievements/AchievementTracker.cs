@@ -10,6 +10,7 @@ namespace Snay.DFStat.Watch.Achievements
         public readonly List<Achievement> Achievements;
 
         public event NewStageUnlockedHandler NewStageUnlocked;
+        public event ProgressChangedHandler ProgressChanged;
 
         public AchievementTracker(GameLogWatcher watcher)
         {
@@ -21,7 +22,16 @@ namespace Snay.DFStat.Watch.Achievements
             };
 
             foreach (Achievement achievement in this.Achievements)
+            {
                 achievement.NewStageUnlocked += HandleNewStageUnlocked;
+                achievement.ProgressChanged += HandleProgressChanged;
+            }
+
+        }
+
+        private void HandleProgressChanged(Achievement sender)
+        {
+            ProgressChanged?.Invoke(sender);
         }
 
         private void HandleNewStageUnlocked(Achievement sender)

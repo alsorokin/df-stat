@@ -6,10 +6,10 @@ namespace Watch.Achievements
     class Butcher : Achievement
     {
         public override string Description =>
-            $"Butcher {ProgressNeeded[Stage]} animal{(Stage > 0 ? "s" : "")}.";
+            $"Butcher {ProgressNeeded[Stage < MaxStage ? Stage + 1 : MaxStage]} animal{(Stage > 0 ? "s" : "")}.";
 
         public override string Name =>
-            "Butcherer";
+            "Butcher of the Mountainhomes";
 
         protected override int[] ProgressNeeded => progressNeeded;
 
