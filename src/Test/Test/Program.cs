@@ -1,4 +1,5 @@
 ﻿using Snay.DFStat.Watch;
+using Snay.DFStat.Watch.Achievements;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,10 +33,13 @@ namespace Snay.DFStat.Test
                 };
 
                 StatCollector collector = new(watcher);
+                AchievementTracker tracker = new(watcher);
+                tracker.NewStageUnlocked += WriteNewStageUnlocked;
 
-                watcher.StartWatching();
-                //watcher.ScanOnce();
-                //WriteStats(collector);
+                //watcher.StartWatching();
+                watcher.ScanOnce();
+                WriteStats(collector);
+                WriteAchievements(tracker);
             }
             catch (FileNotFoundException ex)
             {
@@ -44,22 +48,31 @@ namespace Snay.DFStat.Test
             }
         }
 
+        private static void WriteNewStageUnlocked(Achievement sender)
+        {
+            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write($"Unlocked {sender.Name}, stage {sender.Stage}!");
+
+            Console.ResetColor();
+            Console.WriteLine();
+        }
+
         private static void WriteStats(StatCollector collector)
         {
             int longestType = ((IEnumerable<LineType>)Enum.GetValues(typeof(LineType))).Max(lt => lt.ToString().Length);
-            Console.ResetColor();
-            Console.WriteLine("Stats:");
-            foreach (LineType lnType in Enum.GetValues(typeof(LineType)))
+            ResetAndWriteLine();
+            Console.WriteLine("### Line stats ###");
+            foreach (KeyValuePair<LineType, int> line in collector.LineTypeCounts.OrderByDescending(kv => kv.Value))
             {
+
                 string spaces = string.Empty;
-                int spacesToAdd = longestType - lnType.ToString().Length;
+                int spacesToAdd = longestType - line.Key.ToString().Length;
                 for (int i = 0; i < spacesToAdd; i++)
                     spaces += " ";
 
-                if (!collector.LineTypeCounts.ContainsKey(lnType))
-                    continue;
-
-                Console.WriteLine($"{lnType}:{spaces} {collector.LineTypeCounts[lnType]}");
+                Console.WriteLine($"{line.Key}:{spaces} {line.Value}");
             }
 
             string spacesForTotal = string.Empty;
@@ -69,6 +82,27 @@ namespace Snay.DFStat.Test
 
             Console.WriteLine();
             Console.WriteLine($"Total: {spacesForTotal}{collector.TotalLinesProcessed}");
+        }
+
+        private static void WriteAchievements(AchievementTracker tracker)
+        {
+            Console.WriteLine();
+            Console.Write("### Achievement stats ###");
+            tracker.Achievements.ForEach(WriteAchievement);
+            Console.WriteLine();
+        }
+
+        private static void WriteAchievement(Achievement a)
+        {
+            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine();
+            Console.WriteLine($"Name: {a.Name}");
+            Console.WriteLine($"Description: {a.Description}");
+            Console.WriteLine($"Stage: {a.Stage} / {a.MaxStage}");
+            Console.Write($"Progress: {a.Progress} / {a.MaxProgress}");
+            ResetAndWriteLine();
         }
 
         private static void WriteLine(LineAddedArgs args)
@@ -111,7 +145,7 @@ namespace Snay.DFStat.Test
                 case LineType.BirthDwarf:
                 case LineType.GrowthDwarf:
                     Console.BackgroundColor = ConsoleColor.Green;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     break;
                 case LineType.BirthAnimal:
                 case LineType.GrowthAnimal:
@@ -123,6 +157,11 @@ namespace Snay.DFStat.Test
             }
 
             Console.Write($"({args.LnType}) {args.LnText}");
+            ResetAndWriteLine();
+        }
+
+        private static void ResetAndWriteLine()
+        {
             Console.ResetColor();
             Console.WriteLine();
         }
