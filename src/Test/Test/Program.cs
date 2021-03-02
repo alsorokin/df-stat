@@ -11,7 +11,7 @@ namespace Snay.DFStat.Test
 {
     class Program
     {
-        private static Dictionary<LineType, bool> LineTypeFilter = new()
+        private static readonly Dictionary<LineType, bool> LineTypeFilter = new()
         {
             { LineType.General,          true  },
             { LineType.Combat,           false },
@@ -21,12 +21,18 @@ namespace Snay.DFStat.Test
             { LineType.JobCancellation,  true  },
         };
 
+        private static readonly string[] IgnoredTraits =
+        {
+            "eqMismatch"
+        };
+
         private static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
             try
             {
+                Console.ResetColor();
                 GameLogWatcher watcher = new("C:/Games/Dwarf Fortress");
                 Console.WriteLine($"Found gamelog: {watcher.GameLogFilePath}");
                 watcher.LineAdded += (sender, args) =>
@@ -110,13 +116,16 @@ namespace Snay.DFStat.Test
             WriteColoredLine($"(Achievement) Progress: {a.Progress} / {a.MaxProgress}", fore, back);
         }
 
-        private static void HandleLineAdded(LineAddedArgs args)
+        private static void HandleLineAdded(Line line)
         {
-            if (LineTypeFilter.ContainsKey(args.LnType) && !LineTypeFilter[args.LnType])
+            if (LineTypeFilter.ContainsKey(line.LnType) && !LineTypeFilter[line.LnType])
+                return;
+
+            if (line.Traits.Any(t => IgnoredTraits.Contains(t)))
                 return;
 
             Console.ResetColor();
-            switch (args.LnType)
+            switch (line.LnType)
             {
                 case LineType.Combat:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
@@ -160,8 +169,9 @@ namespace Snay.DFStat.Test
                     Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     break;
             }
+            string traitsTag = line.Traits.Any() ? " [" + line.Traits.Aggregate((total, next) => total + ", " + next) + "]" : string.Empty;
 
-            Console.Write($"({args.LnType}) {args.LnText}");
+            Console.Write($"({line.LnType}){traitsTag} {line.Text}");
             ResetAndWriteLine();
         }
 

@@ -28,9 +28,9 @@ namespace Watch.Achievements
             watcher.LineAdded += HandleLineAdded;
         }
 
-        private void HandleLineAdded(object sender, LineAddedArgs e)
+        private void HandleLineAdded(object sender, Line line)
         {
-            if (e.LnType == LineType.Slaughter)
+            if (line.LnType == LineType.Slaughter)
             {
                 Progress += 1;
             }

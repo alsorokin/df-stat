@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -55,26 +56,39 @@ namespace Snay.DFStat.Watch
             }
         }
 
-        public delegate void LineAddedHandler(object sender, LineAddedArgs e);
+        public delegate void LineAddedHandler(object sender, Line line);
         public event LineAddedHandler LineAdded;
 
-        protected void HandleLine(string line)
+        protected void HandleLine(string text)
         {
-            bool isRepeatedLine = Regex.IsMatch(line, LineHelper.RepeatedLinePattern);
-            if (isRepeatedLine)
-                line = lastLine;
-
+            List<string> traits = new();
             LineType type = LineType.General;
+            bool isRepeatedLine = Regex.IsMatch(text, LineHelper.RepeatedLinePattern);
+            if (isRepeatedLine)
+                text = lastLine;
 
             foreach (KeyValuePair<LineType, string[]> mapping in LineHelper.PatternMappings)
             {
-                if (mapping.Value.Any(l => Regex.IsMatch(line, l)))
+                if (mapping.Value.Any(l => Regex.IsMatch(text, l)))
+                {
                     type = mapping.Key;
+                    break;
+                }
+            }
+
+            foreach (LineTraitMapping mapping in LineHelper.LineTraitMappings.Where(m => m.LnType == type))
+            {
+                foreach (string pattern in mapping.Patterns)
+                {
+                    if (Regex.IsMatch(text, pattern))
+                        traits.Add(mapping.Trait);
+                }
             }
 
             if (!isRepeatedLine)
-                lastLine = line;
-            LineAdded?.Invoke(this, new LineAddedArgs(line, type));
+                lastLine = text;
+            Line line = new(type, text, traits);
+            LineAdded?.Invoke(this, line);
         }
 
         protected static string GetGameLogPath(string workingDir)

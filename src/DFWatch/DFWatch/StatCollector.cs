@@ -22,12 +22,12 @@ namespace Snay.DFStat.Watch
             watcher.LineAdded += HandleLineAdded;
         }
 
-        private void HandleLineAdded(object sender, LineAddedArgs e)
+        private void HandleLineAdded(object sender, Line line)
         {
-            if (!lineTypeCounts.ContainsKey(e.LnType))
-                lineTypeCounts.Add(e.LnType, 0);
+            if (!lineTypeCounts.ContainsKey(line.LnType))
+                lineTypeCounts.Add(line.LnType, 0);
 
-            lineTypeCounts[e.LnType] += 1;
+            lineTypeCounts[line.LnType] += 1;
         }
     }
 }

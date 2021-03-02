@@ -28,7 +28,7 @@ namespace Watch.Achievements
             watcher.LineAdded += HandleLineAdded;
         }
 
-        private void HandleLineAdded(object sender, LineAddedArgs e)
+        private void HandleLineAdded(object sender, Line e)
         {
             if (e.LnType == LineType.Masterpiece)
             {

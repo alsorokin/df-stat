@@ -11,6 +11,8 @@ namespace Snay.DFstat.Test
     {
         private static bool lastLineEmpty;
         private static bool writeCalled;
+        private const ConsoleColor DefaultForeground = ConsoleColor.Gray;
+        private const ConsoleColor DefaultBackground = ConsoleColor.Black;
 
         public static ConsoleColor ForegroundColor
         {
@@ -46,7 +48,10 @@ namespace Snay.DFstat.Test
         }
             
 
-        public static void ResetColor() =>
-            System.Console.ResetColor();
+        public static void ResetColor()
+        {
+            System.Console.BackgroundColor = DefaultBackground;
+            System.Console.ForegroundColor = DefaultForeground;
+        }
     }
 }
