@@ -23,6 +23,11 @@ namespace Snay.DFStat.Watch.Achievements
             get => progress; 
             protected set
             {
+                if (Progress >= ProgressNeeded.Last())
+                    return;
+                if (value > ProgressNeeded.Last())
+                    value = ProgressNeeded.Last();
+
                 // Remember old values for max progress and stage because
                 // incrementing progress will automatically increase these values
                 // when new stage is about to be unlocked
