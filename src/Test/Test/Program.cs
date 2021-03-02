@@ -39,8 +39,8 @@ namespace Snay.DFStat.Test
                 tracker.NewStageUnlocked += WriteNewStageUnlocked;
                 tracker.ProgressChanged += WriteProgressChanged;
 
-                //watcher.StartWatching();
-                watcher.ScanOnce();
+                watcher.StartWatching();
+                //watcher.ScanOnce();
                 WriteStats(collector);
                 WriteAchievements(tracker);
             }
@@ -56,19 +56,15 @@ namespace Snay.DFStat.Test
             ConsoleColor fore = ConsoleColor.Yellow;
             ConsoleColor back = ConsoleColor.DarkMagenta;
             Console.WriteLine();
-            WriteColoredLine($"Unlocked {sender.Name}, stage {sender.Stage}!", fore, back);
-            WriteColoredLine($"Progress to next stage: {sender.Progress} / {sender.MaxProgress}", fore, back);
+            WriteColoredLine($"(Achievement) Unlocked {sender.Name}, stage {sender.Stage}!", fore, back);
+            WriteColoredLine($"(Achievement) Progress to next stage: {sender.Progress} / {sender.MaxProgress}", fore, back);
             Console.WriteLine();
         }
 
         private static void WriteProgressChanged(Achievement sender)
         {
-            ConsoleColor fore = ConsoleColor.Yellow;
-            ConsoleColor back = ConsoleColor.DarkMagenta;
-            Console.WriteLine();
-            WriteColoredLine($"Progress changed for {sender.Name}, stage {sender.Stage}!", fore, back);
-            WriteColoredLine($"Progress: {sender.Progress} / {sender.MaxProgress}", fore, back);
-            Console.WriteLine();
+            ConsoleColor fore = ConsoleColor.White;
+            WriteColoredLine($"(Achievement) {sender.Name} stage {sender.Stage}, progress: {sender.Progress} / {sender.MaxProgress}", fore);
         }
 
         private static void WriteStats(StatCollector collector)
@@ -108,10 +104,10 @@ namespace Snay.DFStat.Test
         {
             ConsoleColor fore = ConsoleColor.DarkMagenta;
             ConsoleColor back = ConsoleColor.Cyan;
-            WriteColoredLine($"Name: {a.Name}", fore, back);
-            WriteColoredLine($"Description: {a.Description}", fore, back);
-            WriteColoredLine($"Stage: {a.Stage} / {a.MaxStage}", fore, back);
-            WriteColoredLine($"Progress: {a.Progress} / {a.MaxProgress}", fore, back);
+            WriteColoredLine($"(Achievement) Name: {a.Name}", fore, back);
+            WriteColoredLine($"(Achievement) Description: {a.Description}", fore, back);
+            WriteColoredLine($"(Achievement) Stage: {a.Stage} / {a.MaxStage}", fore, back);
+            WriteColoredLine($"(Achievement) Progress: {a.Progress} / {a.MaxProgress}", fore, back);
         }
 
         private static void HandleLineAdded(LineAddedArgs args)
@@ -146,7 +142,7 @@ namespace Snay.DFStat.Test
                     break;
                 case LineType.Merchant:
                 case LineType.StrangeMood:
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
                 case LineType.JobCancellation:
                     Console.ForegroundColor = ConsoleColor.DarkRed;

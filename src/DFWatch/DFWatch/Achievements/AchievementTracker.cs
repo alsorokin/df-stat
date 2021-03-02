@@ -19,6 +19,7 @@ namespace Snay.DFStat.Watch.Achievements
             this.Achievements = new()
             {
                 new Butcher(watcher),
+                new Craftsdwarf(watcher),
             };
 
             foreach (Achievement achievement in this.Achievements)

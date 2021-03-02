@@ -131,16 +131,11 @@ namespace Snay.DFStat.Watch
 
         private static readonly string[] MasterpiecePatterns =
         {
-            MasterpieceCookPattern,
-            MasterpieceDyerPattern,
-            MasterpieceGeneralPattern,
-            MasterpieceImprovementPattern,
-        };
-
-        private static readonly string[] MandatePatterns =
-        {
-            MandateConstructionPattern,
-            MandateBanGoodsPattern,
+            @"has created a masterpiece (.+)!$",
+            @"has cooked a masterpiece!$",
+            @"has dyed a masterpiece!$",
+            @"has improved (.+) masterfully!$",
+            @"has constructed a masterpiece!$",
         };
 
         private static readonly string[] StrangeMoodPatterns =
@@ -203,27 +198,9 @@ namespace Snay.DFStat.Watch
             @"^The Forgotten Beast (.+) has come!";
 
         private const string ConstructionMandatePattern =
-            @"(.+) has mandated the construction of certain goods\.";
+            @"^(.+) has mandated the construction of certain goods\.";
 
         private const string ExportsBannedMandatePattern =
-            @"(.+) has imposed a ban on certain exports\.";
-
-        private const string MasterpieceDyerPattern =
-            @"has dyed a masterpiece!$";
-
-        private const string MasterpieceCookPattern =
-            @"has cooked a masterpiece!$";
-
-        private const string MasterpieceGeneralPattern =
-            @"has created a masterpiece (.+)!$";
-
-        private const string MasterpieceImprovementPattern =
-            @"has improved (.+) masterfully!$";
-
-        private const string MandateConstructionPattern =
-            @"has mandated the construction of certain goods\.$";
-
-        private const string MandateBanGoodsPattern =
-            @"has imposed a ban on certain exports\.$";
+            @"^(.+) has imposed a ban on certain exports\.";
     }
 }
