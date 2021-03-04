@@ -96,6 +96,7 @@ namespace Snay.DFStat.Watch
             @"^A major artery in the (.+) has been opened by the attack!$",
             @"^An artery in the (.+) has been opened by the attack!$",
             @"^A sensory nerve has been severed!$",
+            @"^A motor nerve has been severed!$",
             @"^Many nerves have been severed!$",
             @"looks even more sick!$",
             @"breaks the grip of the (.+)'s (.+) on The (.+)'s (.+)\.$",
@@ -107,6 +108,7 @@ namespace Snay.DFStat.Watch
             @"^The (.+) snatches at the (.+)!$",
             @"^The (.+) is caught in a burst of (.+)!$",
             @"^The (.+) is caught in a cloud of (.+)!$",
+            @"^The (.+) breathes a cloud of (.+)'s (.+) vapor!$",
             @"^The (.+) breathes a cloud of (.+) boiling extract!$",
             @"^The (.+) locks the (.+)'s (.+) with The (.+)'s (.+)!$",
             @"^The (.+) gores the (.+) in the (.+) with her (.+)!$",
@@ -114,6 +116,7 @@ namespace Snay.DFStat.Watch
             @"^The (.+) throws the (.+) by the (.+) with The (.+)'s (.+)!$",
             @"^The (.+) breaks the grip of The (.+)'s (.+) (from|on) the (.+)'s (.+)\.$",
             @"^The (.+) has been stunned!$",
+            @"^The (.+) has been stunned again!$",
             @"^The (.+) takes the (.+) down by the (.+) with The (.+)'s (.+)!$",
             @"^The (.+) places a chokehold on the (.+)'s throat with The (.+)'s (.+)!$",
             @"^The (.+) strangles the (.+)'s throat!$",
@@ -122,6 +125,13 @@ namespace Snay.DFStat.Watch
             @"^The (.+) bends the (.+)'s (.+) with The (.+)'s (.+) and the (.+) collapses!$",
             @"^The (.+) releases the joint lock of The (.+)'s (.+) on the (.+)'s (.+)\.$",
             @"is no longer enraged\.$",
+            @"^The (.+) is ripped away and remains in The (.+)'s grip!$",
+            @"^The (.+)'s (.+) skids along the ground(.*)!$",
+            @"^(.+) venom is injected into the the (.+)'s (.+) blood!$",
+            @"^The (.+) is caught up in the web!$",
+            @"^The (.+) is partially free of the web\.$",
+            @"^The (.+) is completely free of the web\.$",
+            @"^The (.+) blocks The flying (.+) with the (.+)!$",
         };
 
         public const string RepeatedLinePattern =
