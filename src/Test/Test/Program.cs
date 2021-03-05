@@ -33,6 +33,7 @@ namespace Snay.DFStat.Test
             try
             {
                 Console.ResetColor();
+                Console.Clear();
                 GameLogWatcher watcher = new("C:/Games/Dwarf Fortress");
                 Console.WriteLine($"Found gamelog: {watcher.GameLogFilePath}");
                 watcher.LineAdded += (sender, args) =>

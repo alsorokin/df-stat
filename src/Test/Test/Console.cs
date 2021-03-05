@@ -53,5 +53,10 @@ namespace Snay.DFstat.Test
             System.Console.BackgroundColor = DefaultBackground;
             System.Console.ForegroundColor = DefaultForeground;
         }
+
+        public static void Clear()
+        {
+            System.Console.Clear();
+        }
     }
 }

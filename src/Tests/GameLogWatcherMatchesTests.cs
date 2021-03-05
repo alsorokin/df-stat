@@ -52,8 +52,8 @@ namespace Snay.DFStat.Tests
 
                 GameLogWatcher watcher = new GameLogWatcher();
                 watcher.LineAdded += (sender, args) => {
-                    if (lineCalls.ContainsKey(args.LnText))
-                        lineCalls[args.LnText] += 1;
+                    if (lineCalls.ContainsKey(args.Text))
+                        lineCalls[args.Text] += 1;
                 };
                 watcher.ScanOnce();
                 foreach (KeyValuePair<string, int> kv in lineCalls)
