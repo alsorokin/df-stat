@@ -205,7 +205,8 @@ namespace Snay.DFStat.Watch
 
         private static string[] OrderPatterns => new string[]
         {
-            @"\(\d+\) has been completed\.$",
+            // Note that the Manager achievement is tied to the first capturing group of this one particular pattern
+            @"\((\d+)\) has been completed\.$",
         };
 
         private static string[] OccupationPatterns => new string[]
