@@ -1,6 +1,5 @@
 ﻿using Snay.DFStat.Watch;
 using Snay.DFStat.Watch.Achievements;
-using System;
 using System.Text.RegularExpressions;
 
 namespace Watch.Achievements
@@ -18,22 +17,16 @@ namespace Watch.Achievements
         private readonly int[] progressNeeded =
         {
             0,     // Achievement locked
-            2,     // Stage 1
-            4,     // Stage 2
-            8,     // Stage 3
-            16,    // Stage 4
-            32,    // Stage 5
-            64,    // Stage 6
-            128,   // Stage 7
-            256,   // Stage 8
-            512,   // Stage 9
-            1024,  // Stage 10
-            2048,  // Stage 11
-            4096,  // Stage 12
-            8192,  // Stage 13
-            16386, // Stage 14
-            32786, // Stage 15
-            65536, // Stage 16
+            128,   // Stage 1
+            256,   // Stage 2
+            512,   // Stage 3
+            1024,  // Stage 4
+            2048,  // Stage 5
+            4096,  // Stage 6
+            8192,  // Stage 7
+            16386, // Stage 8
+            32786, // Stage 9
+            65536, // Stage 10
         };
 
         public Manager(GameLogWatcher watcher) : base(watcher)

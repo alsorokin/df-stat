@@ -5,6 +5,7 @@ namespace Snay.DFStat.Watch.Achievements
 {
     public delegate void NewStageUnlockedHandler(Achievement sender);
     public delegate void ProgressChangedHandler(Achievement sender);
+    public delegate void ProgressPcChangedHandler(Achievement sender);
 
     public abstract class Achievement
     {
@@ -18,6 +19,7 @@ namespace Snay.DFStat.Watch.Achievements
         public virtual int MaxStage => ProgressNeeded.Length - 1;
 
         private int progress;
+
         public virtual int Progress 
         {
             get => progress; 
@@ -33,6 +35,7 @@ namespace Snay.DFStat.Watch.Achievements
                 // when new stage is about to be unlocked
                 int oldMaxProgress = MaxProgress;
                 int oldStage = Stage;
+                int oldProgressPc = ProgressPercent;
                 progress = value;
                 OnProgress();
 
@@ -40,14 +43,23 @@ namespace Snay.DFStat.Watch.Achievements
                 {
                     OnNewStageUnlocked();
                 }
+
+                if (ProgressPercent > oldProgressPc)
+                {
+                    OnProgressPc();
+                }
+
             }
         }
+
+        public int ProgressPercent => (int)Math.Round((double)Progress / MaxProgress * 100);
 
         public virtual int MaxProgress =>
             this.Stage < MaxStage ? ProgressNeeded[Stage + 1] : ProgressNeeded[MaxStage];
         
         public event NewStageUnlockedHandler NewStageUnlocked;
         public event ProgressChangedHandler ProgressChanged;
+        public event ProgressPcChangedHandler ProgressPcChanged;
 
         protected abstract int[] ProgressNeeded { get; }
 
@@ -66,6 +78,11 @@ namespace Snay.DFStat.Watch.Achievements
         protected void OnProgress()
         {
             ProgressChanged?.Invoke(this);
+        }
+
+        protected void OnProgressPc()
+        {
+            ProgressPcChanged?.Invoke(this);
         }
     }
 }
