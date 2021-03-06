@@ -23,7 +23,7 @@ namespace Snay.DFStat.Watch
         public GameLogWatcher(string workingDir = null)
         {
             GameLogFilePath = GetGameLogPath(!string.IsNullOrEmpty(workingDir) ? workingDir : Directory.GetCurrentDirectory());
-            RecentLines = new(10);
+            RecentLines = new();
         }
 
         public void StartWatching()
