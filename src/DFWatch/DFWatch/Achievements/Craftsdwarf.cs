@@ -6,12 +6,12 @@ namespace Watch.Achievements
     class Craftsdwarf : Achievement
     {
         public override string Description =>
-            $"Build, craft or improve {ProgressNeeded[Stage < MaxStage ? Stage + 1 : MaxStage]} masterpiece item{(Stage > 0 ? "s" : "")}.";
+            $"Build, craft or improve {ProgressNeededPerStage[Stage < MaxStage ? Stage + 1 : MaxStage]} masterpiece item{(Stage > 0 ? "s" : "")}.";
 
         public override string Name =>
             "Craftsdwarf";
 
-        protected override int[] ProgressNeeded => progressNeeded;
+        protected override int[] ProgressNeededPerStage => progressNeeded;
 
         private readonly int[] progressNeeded =
         {

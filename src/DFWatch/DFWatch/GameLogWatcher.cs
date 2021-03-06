@@ -14,11 +14,16 @@ namespace Snay.DFStat.Watch
         public string GameLogFilePath { get; protected set; }
         public string GameLogDirectory { get => Path.GetDirectoryName(GameLogFilePath); }
 
+        public Queue<Line> RecentLines;
+
+        private const int MaxRecentLinesCount = 5;
+
         private string lastLine;
 
         public GameLogWatcher(string workingDir = null)
         {
             GameLogFilePath = GetGameLogPath(!string.IsNullOrEmpty(workingDir) ? workingDir : Directory.GetCurrentDirectory());
+            RecentLines = new(10);
         }
 
         public void StartWatching()
@@ -88,6 +93,9 @@ namespace Snay.DFStat.Watch
             if (!isRepeatedLine)
                 lastLine = text;
             Line line = new(type, text, traits);
+            RecentLines.Enqueue(line);
+            if (RecentLines.Count() > MaxRecentLinesCount)
+                RecentLines.Dequeue();
             LineAdded?.Invoke(this, line);
         }
 

@@ -14,9 +14,9 @@ namespace Snay.DFStat.Watch.Achievements
         public abstract string Name { get; }
 
         public virtual int Stage =>
-            Array.IndexOf(ProgressNeeded, ProgressNeeded.Last(pn => pn <= Progress));
+            Array.IndexOf(ProgressNeededPerStage, ProgressNeededPerStage.Last(pn => pn <= Progress));
 
-        public virtual int MaxStage => ProgressNeeded.Length - 1;
+        public virtual int MaxStage => ProgressNeededPerStage.Length - 1;
 
         private int progress;
 
@@ -25,10 +25,10 @@ namespace Snay.DFStat.Watch.Achievements
             get => progress; 
             protected set
             {
-                if (Progress >= ProgressNeeded.Last())
+                if (Progress >= ProgressNeededPerStage.Last())
                     return;
-                if (value > ProgressNeeded.Last())
-                    value = ProgressNeeded.Last();
+                if (value > ProgressNeededPerStage.Last())
+                    value = ProgressNeededPerStage.Last();
 
                 // Remember old values for max progress and stage because
                 // incrementing progress will automatically increase these values
@@ -55,13 +55,13 @@ namespace Snay.DFStat.Watch.Achievements
         public int ProgressPercent => (int)Math.Round((double)Progress / MaxProgress * 100);
 
         public virtual int MaxProgress =>
-            this.Stage < MaxStage ? ProgressNeeded[Stage + 1] : ProgressNeeded[MaxStage];
+            this.Stage < MaxStage ? ProgressNeededPerStage[Stage + 1] : ProgressNeededPerStage[MaxStage];
         
         public event NewStageUnlockedHandler NewStageUnlocked;
         public event ProgressChangedHandler ProgressChanged;
         public event ProgressPcChangedHandler ProgressPcChanged;
 
-        protected abstract int[] ProgressNeeded { get; }
+        protected abstract int[] ProgressNeededPerStage { get; }
 
         protected GameLogWatcher watcher;
 

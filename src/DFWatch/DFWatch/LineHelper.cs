@@ -68,11 +68,9 @@ namespace Snay.DFStat.Watch
             @"has been knocked unconscious",
             @"ligament has been torn",
             @"tendon has been torn",
-            @"^The force bends",
-            @"^The force pulls",
+            @"^The force (bends|twists|pulls) the",
             @"^An artery has been opened",
             @"^A (.+) has been bruised",
-            @"^The force twists",
             @"is propelled away",
             @"^The (.+) slams into an obstacle",
             @"^The (.+) looks sick",
@@ -248,5 +246,11 @@ namespace Snay.DFStat.Watch
 
         private const string ExportsBannedMandatePattern =
             @"^(.+) has imposed a ban on certain exports\.";
+
+        public const string KneeHurtPattern =
+            @"^The force (bends|twists|pulls) the (.+) knee";
+
+        public const string BoltInTheLowerLegPattern =
+            @"^The flying (.+) (bolt|arrow)(.{0,3}) strikes the (.+) in the (.+) lower leg";
     }
 }

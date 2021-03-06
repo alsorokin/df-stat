@@ -22,6 +22,7 @@ namespace Snay.DFStat.Watch.Achievements
                 new Butcher(watcher),
                 new Craftsdwarf(watcher),
                 new Manager(watcher),
+                new Adventurer(watcher),
             };
 
             foreach (Achievement achievement in this.Achievements)

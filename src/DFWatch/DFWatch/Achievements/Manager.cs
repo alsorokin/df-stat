@@ -7,12 +7,12 @@ namespace Watch.Achievements
     class Manager : Achievement
     {
         public override string Description =>
-            $"Create/improve/dye {ProgressNeeded[Stage < MaxStage ? Stage + 1 : MaxStage]} items using work orders.";
+            $"Create/improve/dye {ProgressNeededPerStage[Stage < MaxStage ? Stage + 1 : MaxStage]} items using work orders.";
 
         public override string Name =>
             "Manager";
 
-        protected override int[] ProgressNeeded => progressNeeded;
+        protected override int[] ProgressNeededPerStage => progressNeeded;
 
         private readonly int[] progressNeeded =
         {
