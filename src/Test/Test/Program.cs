@@ -45,7 +45,7 @@ namespace Snay.DFStat.Test
                 AchievementTracker tracker = new(watcher);
                 tracker.NewStageUnlocked += WriteNewStageUnlocked;
                 //tracker.ProgressChanged += WriteProgressChanged;
-                tracker.ProgressPcChanged += WriteProgressPcChanged;
+                tracker.ProgressPcChanged += WriteProgressChanged;
 
                 watcher.StartWatching();
                 //watcher.ScanOnce();
@@ -72,14 +72,9 @@ namespace Snay.DFStat.Test
 
         private static void WriteProgressChanged(Achievement sender)
         {
-            ConsoleColor fore = ConsoleColor.White;
-            WriteColoredLine($"(Achievement) {sender.Name} stage {sender.Stage}, progress: {sender.Progress} / {sender.MaxProgress}", fore);
-        }
-
-        private static void WriteProgressPcChanged(Achievement sender)
-        {
             ConsoleColor fore = ConsoleColor.DarkGreen;
-            WriteColoredLine($"(Achievement) {sender.Name}: Stage {sender.Stage} | {sender.ProgressPercent}% | {sender.Progress} / {sender.MaxProgress}", fore);
+            WriteColoredLine($"(Achievement) {sender.Name}: Stage {sender.Stage} | Next stage: {sender.ProgressPercent}% | {sender.Progress}/{sender.MaxProgress}", fore);
+            WriteColoredLine($"(Achievement) {sender.Description}", fore);
         }
 
         private static void WriteStats(StatCollector collector)
