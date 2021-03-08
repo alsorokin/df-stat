@@ -2,9 +2,11 @@
 using Snay.DFStat.Watch.Achievements;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-
+using System.Runtime.InteropServices;
+using System.Threading;
 using Console = Snay.DFstat.Test.Console;
 
 namespace Snay.DFStat.Test
@@ -34,13 +36,14 @@ namespace Snay.DFStat.Test
             {
                 Console.ResetColor();
                 Console.Clear();
-                GameLogWatcher watcher = new("C:/Games/Dwarf Fortress");
+                GameLogWatcher watcher = new("C:/Users/patla/Desktop/df");
                 Console.WriteLine($"Found gamelog: {watcher.GameLogFilePath}");
                 watcher.LineAdded += (sender, args) =>
                 {
                     HandleLineAdded(args);
                 };
 
+                
                 StatCollector collector = new(watcher);
                 AchievementTracker tracker = new(watcher);
                 tracker.NewStageUnlocked += WriteNewStageUnlocked;
