@@ -37,9 +37,13 @@ namespace WpfClient
 
         private Process GameProcess { get; set; }
 
+        private StatLabels Stats { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            Stats = new StatLabels(StatPanelLeft, StatPanelRight);
 
             // Set a timer to update stats values
             PollingTimer = new(4000d);
@@ -48,8 +52,6 @@ namespace WpfClient
             PollingTimer.Start();
 
             FindGameProcess();
-
-
         }
 
         private void PollingTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -58,9 +60,26 @@ namespace WpfClient
             {
                 if ((GameProcess != null && !GameProcess.HasExited) || FindGameProcess())
                 {
-                    SuppliesLabel.Content = $"Supplies:   {GetInt(Map.Supplies)}";
-                    BoozeLabel.Content = $"Booze:      {GetInt(Map.Booze)}";
-                    PopulationLabel.Content = $"Population: {GetInt(Map.Population)}";
+                    Stats.SuppliesLabel.Content          = $"Supplies:        {GetInt(Map.Supplies)}";
+                    Stats.DrinksLabel.Content            = $"Drinks:          {GetInt(Map.Drinks)}";
+                    Stats.MeatLabel.Content              = $"Meat:            {GetInt(Map.Meat)}";
+                    Stats.FishLabel.Content              = $"Fish:            {GetInt(Map.Fish)}";
+                    Stats.PlantLabel.Content             = $"Plant:           {GetInt(Map.Plant)}";
+                    Stats.OtherFoodLabel.Content         = $"Other Food:      {GetInt(Map.OtherFood)}";
+                    Stats.SeedsLabel.Content             = $"Seeds:           {GetInt(Map.Seeds)}";
+
+                    Stats.PopLabel.Content               = $"Population:      {GetInt(Map.Population)}";
+
+                    Stats.NetWorthLabel.Content          = $"Net Worth:       {GetInt(Map.NetWorth)}";
+                    Stats.ArchitectureWorthLabel.Content = $"Architecture:    {GetInt(Map.Architecture)}";
+                    Stats.ArmorGarbWorthLabel.Content    = $"Armor & Garb:    {GetInt(Map.ArmorGarb)}";
+                    Stats.DisplayedWorthLabel.Content    = $"Displayed:       {GetInt(Map.Displayed)}";
+                    Stats.HeldWornWorthLabel.Content     = $"Held/Worn:       {GetInt(Map.HeldWorn)}";
+                    Stats.OtherObjectsWorthLabel.Content = $"Other Objects:   {GetInt(Map.OtherObjects)}";
+                    Stats.WeaponsWorthLabel.Content      = $"Weapons:         {GetInt(Map.Weapons)}";
+                    Stats.FurnitureWorthLabel.Content    = $"Furniture:       {GetInt(Map.Furniture)}";
+                    Stats.ImportedWealthLabel.Content    = $"Imported Wealth: {GetInt(Map.ImportedWealth)}";
+                    Stats.ExportedWealthLabel.Content    = $"Exported Wealth: {GetInt(Map.ExportedWealth)}";
                 }
             });
         }
@@ -104,17 +123,20 @@ namespace WpfClient
             UInt32 bytesRead = 0;
             var bytes = Read(GameProcess.Handle, module.BaseAddress + (int)map, 4, ref bytesRead);
 
-            return (bytes[1] * 256) + bytes[0];
+            return (bytes[3] * 256 * 256 * 256) + (bytes[2] * 256 * 256) + (bytes[1] * 256) + bytes[0];
         }
 
         private void AddLine(string line)
         {
-            LogBox.Text += line + Environment.NewLine;
+            ListBoxItem item = new();
+            item.Content = line;
+            LogBox.Items.Add(item);
+            //LogBox.Text += line + Environment.NewLine;
         }
 
         private void ClearLog_Click(object sender, RoutedEventArgs e)
         {
-            LogBox.Clear();
+            LogBox.Items.Clear();
         }
     }
 }
