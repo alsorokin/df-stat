@@ -8,6 +8,11 @@
         Title="MainWindow" Height="450" Width="800"
         Background="Gray">
     <Grid ShowGridLines="true">
+        <Grid.Resources>
+            <Style TargetType="StackPanel">
+                <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
+            </Style>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="350" Width="*"></ColumnDefinition>
             <ColumnDefinition Width="180"></ColumnDefinition>
@@ -17,7 +22,12 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="45"></RowDefinition>
         </Grid.RowDefinitions>
-        <ListBox x:Name="LogBox" Margin="10,10,10,10" MinWidth="350" Grid.Column="0" Grid.Row="0" Background="Black" HorizontalAlignment="Stretch">
+        <ListBox x:Name="LogBox" Margin="10,10,10,10" MinWidth="350" Grid.Column="0" Grid.Row="0" Background="Black" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontFamily="Microsoft Sans Serif">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Background" Value="Black"/>
@@ -32,6 +42,7 @@
             <StackPanel.Resources>
                 <Style TargetType="Label">
                     <Setter Property="FontFamily" Value="Courier New"></Setter>
+                    <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
                 </Style>
             </StackPanel.Resources>
         </StackPanel>

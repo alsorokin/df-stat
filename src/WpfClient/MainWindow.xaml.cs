@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Snay.DFStat.Watch;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -39,9 +41,35 @@ namespace WpfClient
 
         private StatLabels Stats { get; set; }
 
+        private GameLogWatcher Watcher { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // A hackish way to do autoscrolling for listbox
+            ((INotifyCollectionChanged)LogBox.Items).CollectionChanged += (_, __) =>
+            {
+                if (VisualTreeHelper.GetChildrenCount(LogBox) > 0)
+                {
+                    Border border = (Border)VisualTreeHelper.GetChild(LogBox, 0);
+                    ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
+                    scrollViewer.ScrollToBottom();
+                }
+            };
+            
+            Watcher = new("C:/Games/Dwarf Fortress/");
+            AddLine("Reading game log: " + Watcher.GameLogFilePath);
+
+            // TODO: Find out why unicode characters are not deplayed:
+            //AddLine("giant cave spider silk hood!", Brushes.LightPink);
+            //TextBlock txt = new();
+            //txt.Text = "giant cave spider silk hood!";
+            //StatPanelLeft.Children.Add(txt);
+
+            Watcher.LineAdded += Watcher_LineAdded;
+            Watcher.StartWatching();
+            //Watcher.ScanOnce();
 
             Stats = new StatLabels(StatPanelLeft, StatPanelRight);
 
@@ -52,6 +80,59 @@ namespace WpfClient
             PollingTimer.Start();
 
             FindGameProcess();
+        }
+
+        private void Watcher_LineAdded(object sender, Snay.DFStat.Watch.Line line)
+        {
+            Brush brush = null;
+
+            switch (line.LnType)
+            {
+                case LineType.Combat:
+                    brush = Brushes.DarkRed;
+                    break;
+                case LineType.Occupation:
+                case LineType.DFHack:
+                    brush = Brushes.DarkGray;
+                    break;
+                case LineType.War:
+                case LineType.ForgottenBeast:
+                    brush = Brushes.Red;
+                    //Console.ForegroundColor = ConsoleColor.Black;
+                    break;
+                case LineType.StuffBreaking:
+                    brush = Brushes.DarkGray;
+                    break;
+                case LineType.Order:
+                case LineType.Masterpiece:
+                    brush = Brushes.Cyan;
+                    break;
+                case LineType.Mandate:
+                    brush = Brushes.Orange;
+                    break;
+                case LineType.Merchant:
+                case LineType.StrangeMood:
+                    brush = Brushes.Yellow;
+                    break;
+                case LineType.JobCancellation:
+                    brush = Brushes.DarkRed;
+                    break;
+                case LineType.BirthDwarf:
+                case LineType.GrowthDwarf:
+                    //Console.BackgroundColor = ConsoleColor.Green;
+                    //Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    brush = Brushes.LightGreen;
+                    break;
+                case LineType.BirthAnimal:
+                case LineType.GrowthAnimal:
+                    brush = Brushes.Green;
+                    break;
+                case LineType.Slaughter:
+                    brush = Brushes.DarkMagenta;
+                    break;
+            }
+
+            AddLine($"[{line.LnType}] {line.Text}", brush);
         }
 
         private void PollingTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -126,17 +207,27 @@ namespace WpfClient
             return (bytes[3] * 256 * 256 * 256) + (bytes[2] * 256 * 256) + (bytes[1] * 256) + bytes[0];
         }
 
-        private void AddLine(string line)
+        private void AddLine(string line, Brush brush = null)
         {
-            ListBoxItem item = new();
-            item.Content = line;
-            LogBox.Items.Add(item);
-            //LogBox.Text += line + Environment.NewLine;
+            if (brush == null) brush = Brushes.LightGray;
+
+            this.Dispatcher.Invoke(() =>
+            {
+                LogBox.Items.Add(new LogBoxItem() { Text = line, Fore = brush });
+                
+                //LogBox.Text += line + Environment.NewLine;
+            });
         }
 
         private void ClearLog_Click(object sender, RoutedEventArgs e)
         {
             LogBox.Items.Clear();
         }
+    }
+
+    public class LogBoxItem
+    {
+        public string Text { get; set; }
+        public Brush Fore { get; set; }
     }
 }

@@ -20,13 +20,16 @@ namespace Snay.DFStat.Watch
 
         private string lastLine;
 
+        private FileSystemWatcher GameLogFileWatcher { get; set; }
+
         public GameLogWatcher(string workingDir = null)
         {
             GameLogFilePath = GetGameLogPath(!string.IsNullOrEmpty(workingDir) ? workingDir : Directory.GetCurrentDirectory());
             RecentLines = new();
+            GameLogFileWatcher = new(GameLogDirectory, GameLogFileName);
         }
 
-        public void StartWatching()
+        public void StartWatchingOld()
         {
             FileSystemWatcher gameLogWatcher = new FileSystemWatcher(GameLogDirectory, GameLogFileName);
             var wh = new AutoResetEvent(false);
@@ -48,6 +51,26 @@ namespace Snay.DFStat.Watch
             }
             // ??
             // wh.Close();
+        }
+
+        public void StartWatching()
+        {
+            FileStream fs = new(GameLogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            StreamReader sr = new(fs);
+
+            GameLogFileWatcher.Changed += (_, __) =>
+            {
+                while (!sr.EndOfStream)
+                {
+                    string s = sr.ReadLine();
+                    if (s != null)
+                    {
+                        HandleLine(s);
+                    }
+                }
+            };
+
+            GameLogFileWatcher.EnableRaisingEvents = true;
         }
 
         public void ScanOnce()

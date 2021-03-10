@@ -51,9 +51,15 @@ namespace Snay.DFStat.Test
                 tracker.ProgressPcChanged += WriteProgressChanged;
 
                 watcher.StartWatching();
+
+                while (true)
+                {
+                    Console.ReadLine();
+                    WriteStats(collector);
+                    WriteAchievements(tracker);
+                }
+
                 //watcher.ScanOnce();
-                WriteStats(collector);
-                WriteAchievements(tracker);
             }
             catch (FileNotFoundException ex)
             {
@@ -108,8 +114,12 @@ namespace Snay.DFStat.Test
         private static void WriteAchievements(AchievementTracker tracker)
         {
             Console.WriteLine();
-            Console.Write("###   Achievement stats   ###");
-            tracker.Achievements.ForEach(WriteAchievement);
+            Console.WriteLine("###   Achievement stats   ###");
+            tracker.Achievements.ForEach((ach) =>
+            {
+                WriteAchievement(ach);
+                Console.WriteLine("-=-");
+            });
             Console.WriteLine();
         }
 

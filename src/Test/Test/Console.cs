@@ -58,5 +58,8 @@ namespace Snay.DFstat.Test
         {
             System.Console.Clear();
         }
+
+        internal static void ReadLine()
+            => System.Console.ReadLine();
     }
 }
