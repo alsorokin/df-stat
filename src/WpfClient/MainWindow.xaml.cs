@@ -223,6 +223,14 @@ namespace WpfClient
         {
             LogBox.Items.Clear();
         }
+
+        private void LogBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (ItemsControl.ContainerFromElement(LogBox, e.OriginalSource as DependencyObject) is ListBoxItem item)
+            {
+                Clipboard.SetText(((LogBoxItem)item.Content).Text);
+            }
+        }
     }
 
     public class LogBoxItem

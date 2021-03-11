@@ -22,7 +22,9 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="45"></RowDefinition>
         </Grid.RowDefinitions>
-        <ListBox x:Name="LogBox" Margin="10,10,10,10" MinWidth="350" Grid.Column="0" Grid.Row="0" Background="Black" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" FontFamily="Microsoft Sans Serif">
+        <ListBox x:Name="LogBox" Margin="10,10,10,10" MinWidth="350" Grid.Column="0" Grid.Row="0" 
+                 Background="Black" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                 FontFamily="Consolas" FontSize="14" PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
