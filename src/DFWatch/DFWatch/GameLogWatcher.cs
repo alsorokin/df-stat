@@ -26,35 +26,12 @@ namespace Snay.DFStat.Watch
         {
             GameLogFilePath = GetGameLogPath(!string.IsNullOrEmpty(workingDir) ? workingDir : Directory.GetCurrentDirectory());
             RecentLines = new();
-            GameLogFileWatcher = new(GameLogDirectory, GameLogFileName);
         }
 
-        public void StartWatchingOld()
-        {
-            FileSystemWatcher gameLogWatcher = new FileSystemWatcher(GameLogDirectory, GameLogFileName);
-            var wh = new AutoResetEvent(false);
-            gameLogWatcher.Changed += (s, e) => wh.Set();
-            gameLogWatcher.EnableRaisingEvents = true;
-
-            var fs = new FileStream(GameLogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using (var sr = new StreamReader(fs))
-            {
-                var s = string.Empty;
-                while (true)
-                {
-                    s = sr.ReadLine();
-                    if (s != null)
-                        HandleLine(s);
-                    else
-                        wh.WaitOne(1000);
-                }
-            }
-            // ??
-            // wh.Close();
-        }
 
         public void StartWatching()
         {
+            GameLogFileWatcher = new(GameLogDirectory, GameLogFileName);
             FileStream fs = new(GameLogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             StreamReader sr = new(fs);
 
@@ -71,6 +48,12 @@ namespace Snay.DFStat.Watch
             };
 
             GameLogFileWatcher.EnableRaisingEvents = true;
+        }
+
+        public void StopWatching()
+        {
+            GameLogFileWatcher.EnableRaisingEvents = false;
+            GameLogFileWatcher.Dispose();
         }
 
         public void ScanOnce()

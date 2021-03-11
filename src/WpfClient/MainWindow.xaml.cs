@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Line = Snay.DFStat.Watch.Line;
 
 namespace WpfClient
 {
@@ -43,25 +44,38 @@ namespace WpfClient
 
         private GameLogWatcher Watcher { get; set; }
 
+        private bool closing = false;
+
         public MainWindow()
         {
             InitializeComponent();
 
             // A hackish way to do autoscrolling for listbox
+            /*
             ((INotifyCollectionChanged)LogBox.Items).CollectionChanged += (_, __) =>
             {
-                if (VisualTreeHelper.GetChildrenCount(LogBox) > 0)
+                if (MainTab.IsSelected && VisualTreeHelper.GetChildrenCount(LogBox) > 0)
                 {
                     Border border = (Border)VisualTreeHelper.GetChild(LogBox, 0);
                     ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
                     scrollViewer.ScrollToBottom();
                 }
             };
-            
+            ((INotifyCollectionChanged)CombatLogBox.Items).CollectionChanged += (_, __) =>
+            {
+                if (CombatTab.IsSelected && VisualTreeHelper.GetChildrenCount(LogBox) > 0)
+                {
+                    Border border = (Border)VisualTreeHelper.GetChild(CombatLogBox, 0);
+                    ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
+                    scrollViewer.ScrollToBottom();
+                }
+            };
+            */
+
             Watcher = new("C:/Games/Dwarf Fortress/");
             AddLine("Reading game log: " + Watcher.GameLogFilePath);
 
-            // TODO: Find out why unicode characters are not deplayed:
+            // TODO: Find out why unicode characters are not displayed:
             //AddLine("giant cave spider silk hood!", Brushes.LightPink);
             //TextBlock txt = new();
             //txt.Text = "giant cave spider silk hood!";
@@ -89,7 +103,7 @@ namespace WpfClient
             switch (line.LnType)
             {
                 case LineType.Combat:
-                    brush = Brushes.DarkRed;
+                    brush = Brushes.DarkGray;
                     break;
                 case LineType.Occupation:
                 case LineType.DFHack:
@@ -132,7 +146,7 @@ namespace WpfClient
                     break;
             }
 
-            AddLine($"[{line.LnType}] {line.Text}", brush);
+            AddLine(line, brush);
         }
 
         private void PollingTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -209,14 +223,42 @@ namespace WpfClient
 
         private void AddLine(string line, Brush brush = null)
         {
+            if (closing) return;
             if (brush == null) brush = Brushes.LightGray;
 
             this.Dispatcher.Invoke(() =>
             {
-                LogBox.Items.Add(new LogBoxItem() { Text = line, Fore = brush });
-                
-                //LogBox.Text += line + Environment.NewLine;
+                LogBoxItem item = new() { Text = line, Fore = brush };
+                LogBox.Items.Add(item);
+                LogBox.UpdateLayout();
+                LogBox.ScrollIntoView(item);
             });
+        }
+
+        private void AddCombatLine(string line, Brush brush = null)
+        {
+            if (closing) return;
+            if (brush == null) brush = Brushes.LightGray;
+
+            this.Dispatcher.Invoke(() =>
+            {
+                LogBoxItem item = new() { Text = line, Fore = brush };
+                CombatLogBox.Items.Add(item);
+                CombatLogBox.UpdateLayout();
+                CombatLogBox.ScrollIntoView(item);
+            });
+        }
+
+        private void AddLine(Line line, Brush brush = null)
+        {
+            if (line.LnType == LineType.Combat)
+            {
+                AddCombatLine($"[{line.LnType}] {line.Text}", brush);
+            }
+            else
+            {
+                AddLine($"[{line.LnType}] {line.Text}", brush);
+            }
         }
 
         private void ClearLog_Click(object sender, RoutedEventArgs e)
@@ -230,6 +272,13 @@ namespace WpfClient
             {
                 Clipboard.SetText(((LogBoxItem)item.Content).Text);
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            closing = true;
+            PollingTimer.Stop();
+            Watcher.StopWatching();
         }
     }
 

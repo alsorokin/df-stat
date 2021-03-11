@@ -5,55 +5,78 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Background="Gray">
-    <Grid ShowGridLines="true">
-        <Grid.Resources>
-            <Style TargetType="StackPanel">
-                <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
-            </Style>
-        </Grid.Resources>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="350" Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="180"></ColumnDefinition>
-            <ColumnDefinition Width="200"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="45"></RowDefinition>
-        </Grid.RowDefinitions>
-        <ListBox x:Name="LogBox" Margin="10,10,10,10" MinWidth="350" Grid.Column="0" Grid.Row="0" 
-                 Background="Black" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+        Title="MainWindow" Height="450" Width="800" Closing="Window_Closing">
+    <TabControl Background="Gray">
+        <TabItem Name="MainTab" Header="Main">
+            <Grid ShowGridLines="true">
+                <Grid.Resources>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="350" Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="180"></ColumnDefinition>
+                    <ColumnDefinition Width="200"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="45"></RowDefinition>
+                </Grid.RowDefinitions>
+                <ListBox x:Name="LogBox" Margin="10,10,10,10" MinWidth="350" Grid.Column="0" Grid.Row="0" 
+                 Background="Black" HorizontalAlignment="Stretch" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.IsDeferredScrollingEnabled="True" VirtualizingPanel.ScrollUnit="Pixel"
                  FontFamily="Consolas" FontSize="14" PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.Resources>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Background" Value="Black"/>
-                    <Setter Property="Foreground" Value="LightGray" />
-                    <Setter Property="HorizontalAlignment" Value="Stretch" />
-                </Style>
-            </ListBox.Resources>
-        </ListBox>
-        <Button x:Name="PushMe" Content="Read Memory" Margin="12,0,12,12" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Click="PushMe_Click" Grid.Row="1" Grid.Column="0"/>
-        <Button x:Name="ClearLog" Content="Clear Log" Margin="112,0,12,12" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Click="ClearLog_Click" Grid.Row="1" Grid.Column="0"/>
-        <StackPanel x:Name="StatPanelLeft" Grid.RowSpan="1" HorizontalAlignment="Right" Margin="0,0,0,43" Grid.Column="1">
-            <StackPanel.Resources>
-                <Style TargetType="Label">
-                    <Setter Property="FontFamily" Value="Courier New"></Setter>
-                    <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
-                </Style>
-            </StackPanel.Resources>
-        </StackPanel>
-        <StackPanel x:Name="StatPanelRight" Margin="0,0,0,43" Grid.RowSpan="1" HorizontalAlignment="Right" Grid.Column="2">
-            <StackPanel.Resources>
-                <Style TargetType="Label">
-                    <Setter Property="FontFamily" Value="Courier New"></Setter>
-                </Style>
-            </StackPanel.Resources>
-        </StackPanel>
-    </Grid>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.Resources>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Black"/>
+                            <Setter Property="Foreground" Value="LightGray" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.Resources>
+                </ListBox>
+                <Button x:Name="PushMe" Content="Read Memory" Margin="12,0,12,12" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Click="PushMe_Click" Grid.Row="1" Grid.Column="0"/>
+                <Button x:Name="ClearLog" Content="Clear Log" Margin="112,0,12,12" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90" Click="ClearLog_Click" Grid.Row="1" Grid.Column="0"/>
+                <StackPanel x:Name="StatPanelLeft" Grid.RowSpan="1" HorizontalAlignment="Right" Margin="0,0,0,43" Grid.Column="1">
+                    <StackPanel.Resources>
+                        <Style TargetType="Label">
+                            <Setter Property="FontFamily" Value="Courier New"></Setter>
+                            <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                </StackPanel>
+                <StackPanel x:Name="StatPanelRight" Margin="0,0,0,43" Grid.RowSpan="1" HorizontalAlignment="Right" Grid.Column="2">
+                    <StackPanel.Resources>
+                        <Style TargetType="Label">
+                            <Setter Property="FontFamily" Value="Courier New"></Setter>
+                        </Style>
+                    </StackPanel.Resources>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Name="CombatTab" Header="Combat">
+            <ListBox x:Name="CombatLogBox" Margin="10,10,10,10" MinWidth="350" Grid.Column="0" Grid.Row="0" 
+                 Background="Black" HorizontalAlignment="Stretch" 
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False"
+                 FontFamily="Consolas" FontSize="14" PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Black"/>
+                        <Setter Property="Foreground" Value="LightGray" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+        </TabItem>
+    </TabControl>
 </Window>
