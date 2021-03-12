@@ -23,5 +23,15 @@
         Slaughter,
         GrowthDwarf,
         GrowthAnimal,
+        Visitors,
+        JobSuspended,
+        AnimalWild,
+        Diplomacy,
+        Politics,
+        Discovery,
+        Dead,
+        Adamantine,
+        Minerals,
+        CaveIn,
     }
 }

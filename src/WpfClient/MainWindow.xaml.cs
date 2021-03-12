@@ -113,6 +113,7 @@ namespace WpfClient
                     break;
                 case LineType.War:
                 case LineType.ForgottenBeast:
+                case LineType.AnimalWild:
                     brush = Brushes.Red;
                     //Console.ForegroundColor = ConsoleColor.Black;
                     break;
@@ -124,10 +125,15 @@ namespace WpfClient
                     brush = Brushes.Cyan;
                     break;
                 case LineType.Mandate:
+                case LineType.JobSuspended:
                     brush = Brushes.Orange;
                     break;
                 case LineType.Merchant:
                 case LineType.StrangeMood:
+                case LineType.Diplomacy:
+                case LineType.Politics:
+                case LineType.Minerals:
+                case LineType.CaveIn:
                     brush = Brushes.Yellow;
                     break;
                 case LineType.JobCancellation:
@@ -135,16 +141,27 @@ namespace WpfClient
                     break;
                 case LineType.BirthDwarf:
                 case LineType.GrowthDwarf:
+                case LineType.Discovery:
                     //Console.BackgroundColor = ConsoleColor.Green;
                     //Console.ForegroundColor = ConsoleColor.DarkMagenta;
                     brush = Brushes.LightGreen;
                     break;
                 case LineType.BirthAnimal:
                 case LineType.GrowthAnimal:
+                case LineType.Visitors:
                     brush = Brushes.Green;
                     break;
                 case LineType.Slaughter:
                     brush = Brushes.DarkMagenta;
+                    break;
+                case LineType.Dead:
+                    brush = Brushes.Magenta;
+                    break;
+                case LineType.Adamantine:
+                    brush = Brushes.LightCyan;
+                    break;
+                case LineType.Weather:
+                    brush = Brushes.DarkBlue;
                     break;
             }
 
@@ -195,6 +212,9 @@ namespace WpfClient
 
         private int GetInt(Map map)
         {
+            if (GameProcess == null || GameProcess.HasExited)
+                return 0;
+
             ProcessModule module = GameProcess.MainModule;
 
             UInt32 bytesRead = 0;

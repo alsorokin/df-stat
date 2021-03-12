@@ -164,14 +164,20 @@ namespace Snay.DFStat.Test
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     break;
                 case LineType.Mandate:
+                case LineType.JobSuspended:
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
                 case LineType.Merchant:
                 case LineType.StrangeMood:
+                case LineType.Diplomacy:
+                case LineType.Politics:
+                case LineType.Minerals:
+                case LineType.CaveIn:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
                 case LineType.JobCancellation:
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                case LineType.AnimalWild:
+                    Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 case LineType.BirthDwarf:
                 case LineType.GrowthDwarf:
@@ -180,10 +186,22 @@ namespace Snay.DFStat.Test
                     break;
                 case LineType.BirthAnimal:
                 case LineType.GrowthAnimal:
+                case LineType.Visitors:
+                case LineType.Discovery:
                     Console.ForegroundColor = ConsoleColor.Green;
                     break;
                 case LineType.Slaughter:
                     Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    break;
+                case LineType.Dead:
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    break;
+                case LineType.Adamantine:
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LineType.Weather:
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
                     break;
             }
             string traitsTag = line.Traits.Any() ? " [" + line.Traits.Aggregate((total, next) => total + ", " + next) + "]" : string.Empty;

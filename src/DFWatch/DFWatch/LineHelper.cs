@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 
 namespace Snay.DFStat.Watch
 {
@@ -25,6 +26,18 @@ namespace Snay.DFStat.Watch
             { LineType.GrowthDwarf, GrowthDwarfPatterns },
             { LineType.GrowthAnimal, GrowthAnimalPatterns },
             { LineType.Slaughter, SlaughterPatterns },
+            { LineType.Visitors, VisitorsPatterns },
+            { LineType.JobSuspended, JobSuspendedPatterns },
+            { LineType.TimeOfYear, TimeOfYearPatterns },
+            { LineType.Weather, WeatherPatterns },
+            { LineType.AnimalWild, AnimalWildPatterns },
+            { LineType.Diplomacy, DiplomacyPatterns },
+            { LineType.Politics, PoliticsPatterns },
+            { LineType.Discovery, DiscoveryPatterns },
+            { LineType.Dead, DeadPatterns },
+            { LineType.Adamantine, AdamantinePatterns },
+            { LineType.Minerals, MineralsPatterns },
+            { LineType.CaveIn, CaveInPatterns },
         };
 
         public static List<LineTraitMapping> LineTraitMappings => new()
@@ -130,6 +143,11 @@ namespace Snay.DFStat.Watch
             @"^The (.+) is partially free of the web\.$",
             @"^The (.+) is completely free of the web\.$",
             @"^The (.+) blocks The flying (.+) with the (.+)!$",
+            @"^The (.+) struggles in vain against the grip of the (.+)'s (.+) on The (.+)'s (.+)\.$",
+            @"^The (.+) slams into the (.+)\!$",
+            @"^The (.+) shoots out thick strands of webbing\!$",
+            @"^The (.+) bends the (.+)'s (.+) with The (.+)'s (.+)(,?.*)!$",
+
         };
 
         public const string RepeatedLinePattern =
@@ -163,13 +181,14 @@ namespace Snay.DFStat.Watch
             @"caravan(.+) has arrived\.$",
             @"^Merchants have arrived and are unloading their goods\.$",
             @"^The merchants from (.+) will be leaving soon\.$",
-            @"^The merchants from (.+) have embarked on their journey.$",
+            @"^The merchants from (.+) have embarked on their journey\.$",
         };
 
         private static string[] MandatesPatterns => new string[]
         {
             ConstructionMandatePattern,
             ExportsBannedMandatePattern,
+            @" has ended a mandate\.$"
         };
 
         private static string[] MasterpiecePatterns => new string[]
@@ -185,6 +204,7 @@ namespace Snay.DFStat.Watch
         {
             @"is taken by a fey mood!$",
             @"withdraws from society\.\.\.$",
+            @"has been possessed!$",
             @"has claimed a (.+)\.$",
             @"has begun a mysterious construction!$",
             @"has created (.+), a (.+)!",
@@ -209,7 +229,7 @@ namespace Snay.DFStat.Watch
 
         private static string[] OccupationPatterns => new string[]
         {
-            @"has become a (.+)\.$",
+            @"(?<!An animal) has become a (.+)\.$",
         };
 
         private static string[] BirthDwarfPatterns => new string[]
@@ -226,6 +246,7 @@ namespace Snay.DFStat.Watch
         private static string[] GrowthAnimalPatterns => new string[]
         {
             @"^An animal has grown to become a (.+)\.$",
+            @"^An animal has become a (.+)\.$",
         };
 
         private static string[] GrowthDwarfPatterns => new string[]
@@ -236,6 +257,76 @@ namespace Snay.DFStat.Watch
         private static string[] SlaughterPatterns => new string[]
         {
             @"has been slaughtered\.$",
+        };
+
+        private static string[] VisitorsPatterns => new string[]
+        {
+            @"^(.+), a (.+), is visiting\.$",
+            @"^(.+), (.+) is visiting\.$",
+        };
+
+        private static string[] JobSuspendedPatterns => new string[]
+        {
+            @"^Digging designation cancelled: warm stone located\.$",
+            @"^The dwarves suspended the construction of (.+)\.$",
+        };
+
+        private static string[] TimeOfYearPatterns => new string[]
+        {
+            @"^Spring has arrived on the calendar\.$",
+            @"^Spring has arrived!$",
+            @"^It is now summer\.$",
+            @"^Autumn has come\.$",
+            @"^Autumn has arrived on the calendar\.$",
+            @"^Winter is upon you\.$",
+        };
+
+        private static string[] WeatherPatterns => new string[]
+        {
+            @"^The weather has cleared\.$",
+            @"^It has started raining\.$",
+        };
+
+        private static string[] AnimalWildPatterns = new string[]
+        {
+            @"^The (.+) has reverted to a wild state!$",
+        };
+
+        private static string[] DiplomacyPatterns = new string[]
+        {
+            @"^A (.+) diplomat from (.+) has arrived\.$",
+            @"^The outpost liaison (.+) from (.+) has arrived\.$",
+        };
+
+        private static string[] PoliticsPatterns = new string[]
+        {
+            @"^(.+), (.+) has been re-elected\.$",
+            @"^After a polite discussion with local rivals, (.+) has claimed the position of (.+) of (.+)\.$",
+        };
+
+        private static string[] DiscoveryPatterns = new string[]
+        {
+            @"^The (\w+) (.+) has discovered (.+)\.$",
+        };
+
+        private static string[] DeadPatterns = new string[]
+        {
+            @" has been found dead\.$",
+        };
+
+        private static string[] AdamantinePatterns = new string[]
+        {
+            @"^Raw adamantine!\s+Praise the miners!$",
+        };
+
+        private static string[] MineralsPatterns = new string[]
+        {
+            @"^You have struck (.+)\!$",
+        };
+
+        private static string[] CaveInPatterns = new string[]
+        {
+            @"^A section of the cavern has collapsed!$",
         };
 
         private const string ForgottenBeastHasComePattern =
