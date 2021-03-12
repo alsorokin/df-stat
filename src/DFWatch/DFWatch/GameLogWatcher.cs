@@ -34,6 +34,8 @@ namespace Snay.DFStat.Watch
             GameLogFileWatcher = new(GameLogDirectory, GameLogFileName);
             FileStream fs = new(GameLogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             StreamReader sr = new(fs);
+            // couldn't find a better way to set the position to last line yet
+            sr.ReadToEnd();
 
             GameLogFileWatcher.Changed += (_, __) =>
             {

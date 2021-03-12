@@ -46,31 +46,27 @@ namespace WpfClient
 
         private bool closing = false;
 
+        private LogBoxItem lastLogItemAdded;
+
+        private LogBoxItem lastCombatLogItemAdded;
+
+        private GridLength statsColumnLeftWidth;
+
+        private GridLength statsColumnRightWidth;
+
+        private List<UIElement> leftPanelChildren = new();
+
+        private List<string> ignoredTags = new()
+        {
+            // TODO: Don't use magic strings?
+            "eqMismatch"
+        };
+
+        private LayoutMode currentLayout = LayoutMode.StatsTwoColumns;
+
         public MainWindow()
         {
             InitializeComponent();
-
-            // A hackish way to do autoscrolling for listbox
-            /*
-            ((INotifyCollectionChanged)LogBox.Items).CollectionChanged += (_, __) =>
-            {
-                if (MainTab.IsSelected && VisualTreeHelper.GetChildrenCount(LogBox) > 0)
-                {
-                    Border border = (Border)VisualTreeHelper.GetChild(LogBox, 0);
-                    ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
-                    scrollViewer.ScrollToBottom();
-                }
-            };
-            ((INotifyCollectionChanged)CombatLogBox.Items).CollectionChanged += (_, __) =>
-            {
-                if (CombatTab.IsSelected && VisualTreeHelper.GetChildrenCount(LogBox) > 0)
-                {
-                    Border border = (Border)VisualTreeHelper.GetChild(CombatLogBox, 0);
-                    ScrollViewer scrollViewer = (ScrollViewer)VisualTreeHelper.GetChild(border, 0);
-                    scrollViewer.ScrollToBottom();
-                }
-            };
-            */
 
             Watcher = new("C:/Games/Dwarf Fortress/");
             AddLine("Reading game log: " + Watcher.GameLogFilePath);
@@ -86,6 +82,12 @@ namespace WpfClient
             //Watcher.ScanOnce();
 
             Stats = new StatLabels(StatPanelLeft, StatPanelRight);
+
+            foreach (UIElement child in StatPanelLeft.Children)
+            {
+                leftPanelChildren.Add(child);
+            }
+            leftPanelChildren.Reverse();
 
             // Set a timer to update stats values
             PollingTimer = new(4000d);
@@ -191,26 +193,6 @@ namespace WpfClient
             return false;
         }
 
-        private void PushMe_Click(object sender, RoutedEventArgs e)
-        {
-            ProcessModule module = GameProcess.MainModule;
-
-            AddLine(module.ModuleName + ": " + module.BaseAddress.ToString("X"));
-            AddLine(module.FileName);
-            AddLine("Memory size: " + module.ModuleMemorySize.ToString("X"));
-
-            IntPtr startAddress = module.BaseAddress;
-            IntPtr endAddress = module.BaseAddress + module.ModuleMemorySize;
-
-            UInt32 bytesRead = 0;
-            var bytes = Read(GameProcess.Handle, module.BaseAddress + 0x1C34A64, 4, ref bytesRead);
-            AddLine("1:");
-            AddLine(bytes[0].ToString());
-            AddLine(bytes[1].ToString());
-            AddLine(bytes[2].ToString());
-            AddLine(bytes[3].ToString());
-        }
-
         private int GetInt(Map map)
         {
             ProcessModule module = GameProcess.MainModule;
@@ -232,6 +214,7 @@ namespace WpfClient
                 LogBox.Items.Add(item);
                 LogBox.UpdateLayout();
                 LogBox.ScrollIntoView(item);
+                lastLogItemAdded = item;
             });
         }
 
@@ -246,11 +229,15 @@ namespace WpfClient
                 CombatLogBox.Items.Add(item);
                 CombatLogBox.UpdateLayout();
                 CombatLogBox.ScrollIntoView(item);
+                lastCombatLogItemAdded = item;
             });
         }
 
         private void AddLine(Line line, Brush brush = null)
         {
+            if (line.Traits.Any(t => ignoredTags.Contains(t)))
+                return;
+
             if (line.LnType == LineType.Combat)
             {
                 AddCombatLine($"[{line.LnType}] {line.Text}", brush);
@@ -259,11 +246,6 @@ namespace WpfClient
             {
                 AddLine($"[{line.LnType}] {line.Text}", brush);
             }
-        }
-
-        private void ClearLog_Click(object sender, RoutedEventArgs e)
-        {
-            LogBox.Items.Clear();
         }
 
         private void LogBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -280,11 +262,68 @@ namespace WpfClient
             PollingTimer.Stop();
             Watcher.StopWatching();
         }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TabItem item = e.AddedItems[0] as TabItem;
+            if (item == MainTab)
+            {
+                
+                //LogBox.UpdateLayout();
+                LogBox.ScrollIntoView(lastLogItemAdded);
+            }
+            else if (item == CombatTab)
+            {
+                //CombatLogBox.UpdateLayout();
+                CombatLogBox.ScrollIntoView(lastCombatLogItemAdded);
+            }
+        }
+
+        private void ToggleStats_Click(object sender, RoutedEventArgs e)
+        {
+            switch (currentLayout)
+            {
+                case LayoutMode.StatsTwoColumns:
+                    foreach (UIElement child in leftPanelChildren)
+                    {
+                        StatPanelLeft.Children.Remove(child);
+                        StatPanelRight.Children.Insert(0, child);
+                    }
+                    statsColumnLeftWidth = StatsColumnLeft.Width;
+                    StatsColumnLeft.Width = new GridLength(0, GridUnitType.Pixel);
+                    currentLayout = LayoutMode.StatsOneColumn;
+                    break;
+                case LayoutMode.StatsOneColumn:
+                    ToggleStats.Content = "<";
+                    statsColumnRightWidth = StatsColumnRight.Width;
+                    StatsColumnRight.Width = new GridLength(0, GridUnitType.Pixel);
+                    currentLayout = LayoutMode.NoStats;
+                    break;
+                case LayoutMode.NoStats:
+                    StatsColumnLeft.Width = statsColumnLeftWidth;
+                    StatsColumnRight.Width = statsColumnRightWidth;
+                    foreach (UIElement child in leftPanelChildren)
+                    {
+                        StatPanelRight.Children.Remove(child);
+                        StatPanelLeft.Children.Insert(0, child);
+                    }
+                    ToggleStats.Content = ">";
+                    currentLayout = LayoutMode.StatsTwoColumns;
+                    break;
+            }
+        }
     }
 
     public class LogBoxItem
     {
         public string Text { get; set; }
         public Brush Fore { get; set; }
+    }
+
+    public enum LayoutMode
+    {
+        StatsTwoColumns,
+        StatsOneColumn,
+        NoStats
     }
 }

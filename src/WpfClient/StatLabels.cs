@@ -33,7 +33,7 @@ namespace WpfClient
 
         public StatLabels (StackPanel statPanelLeft, StackPanel statPanelRight)
         {
-
+            statPanelLeft.Children.Add(new Separator());
             statPanelLeft.Children.Add(SuppliesLabel = new());
             statPanelLeft.Children.Add(MeatLabel = new());
             statPanelLeft.Children.Add(FishLabel = new());
@@ -44,6 +44,7 @@ namespace WpfClient
             statPanelLeft.Children.Add(new Separator());
             statPanelLeft.Children.Add(PopLabel = new());
 
+            statPanelRight.Children.Add(new Separator());
             statPanelRight.Children.Add(NetWorthLabel = new());
             statPanelRight.Children.Add(WeaponsWorthLabel = new());
             statPanelRight.Children.Add(ArmorGarbWorthLabel = new());
