@@ -2,11 +2,9 @@
 using Snay.DFStat.Watch.Achievements;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
+
 using Console = Snay.DFstat.Test.Console;
 
 namespace Snay.DFStat.Test
@@ -145,8 +143,10 @@ namespace Snay.DFStat.Test
             switch (line.LnType)
             {
                 case LineType.Combat:
+                case LineType.ArtDefacement:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
+                case LineType.CombatMinor:
                 case LineType.Occupation:
                 case LineType.DFHack:
                     Console.ForegroundColor = ConsoleColor.DarkGray;

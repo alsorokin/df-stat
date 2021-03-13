@@ -1,22 +1,15 @@
 ﻿using Snay.DFStat.Watch;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 using Line = Snay.DFStat.Watch.Line;
 
 namespace WpfClient
@@ -104,12 +97,18 @@ namespace WpfClient
 
             switch (line.LnType)
             {
+                case LineType.CombatMinor:
+                    brush = Brushes.Aqua;
+                    break;
                 case LineType.Combat:
                     brush = Brushes.DarkGray;
                     break;
                 case LineType.Occupation:
                 case LineType.DFHack:
                     brush = Brushes.DarkGray;
+                    break;
+                case LineType.ArtDefacement:
+                    brush = Brushes.DarkRed;
                     break;
                 case LineType.War:
                 case LineType.ForgottenBeast:
@@ -258,7 +257,7 @@ namespace WpfClient
             if (line.Traits.Any(t => ignoredTags.Contains(t)))
                 return;
 
-            if (line.LnType == LineType.Combat)
+            if (line.LnType == LineType.Combat || line.LnType == LineType.CombatMinor)
             {
                 AddCombatLine($"[{line.LnType}] {line.Text}", brush);
             }
@@ -288,13 +287,10 @@ namespace WpfClient
             TabItem item = e.AddedItems[0] as TabItem;
             if (item == MainTab)
             {
-                
-                //LogBox.UpdateLayout();
                 LogBox.ScrollIntoView(lastLogItemAdded);
             }
             else if (item == CombatTab)
             {
-                //CombatLogBox.UpdateLayout();
                 CombatLogBox.ScrollIntoView(lastCombatLogItemAdded);
             }
         }

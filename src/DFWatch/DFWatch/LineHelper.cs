@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 
 namespace Snay.DFStat.Watch
 {
@@ -11,7 +10,10 @@ namespace Snay.DFStat.Watch
             { LineType.BirthDwarf, BirthDwarfPatterns },
             { LineType.BirthAnimal, BirthAnimalPatterns },
 
+            // These two should also be in that particular order:
+            { LineType.CombatMinor, CombatMinorPatterns },
             { LineType.Combat, CombatPatterns },
+
             { LineType.StuffBreaking, StuffBreakingPatterns },
             { LineType.DFHack, DFHackPatterns },
             { LineType.Merchant, MerchantPatterns },
@@ -38,6 +40,9 @@ namespace Snay.DFStat.Watch
             { LineType.Adamantine, AdamantinePatterns },
             { LineType.Minerals, MineralsPatterns },
             { LineType.CaveIn, CaveInPatterns },
+            { LineType.ArtDefacement, ArtDefacementPatterns },
+            { LineType.AnimalKnowledge, AnimalKnowledgePatterns },
+            { LineType.NamedWeapons, NamedWeaponsPatterns },
         };
 
         public static List<LineTraitMapping> LineTraitMappings => new()
@@ -49,42 +54,53 @@ namespace Snay.DFStat.Watch
             },
         };
 
+        private static string[] CombatMinorPatterns => new string[]
+        {
+            @"lightly tapping the target!$",
+            @"^The (.+) strikes at the (.+) but the shot is blocked(.*)!$",
+            @"^The (.+) attacks the (.+) but (He|She|It) (scrambles|rolls|jumps) away!$",
+            @"^The (.+) strikes at the (.+) but the shot is ?(just barely|deftly|easily)? parried by (.+)!$",
+            @"^The (.+) strikes at the (.+) but the shot is ?(narrowly|easily|effortlessly)? deflected by (.+)!$",
+            @"^The (.+) stands up\.$",
+            @"^The (.+) misses the (.+)!$",
+            @"^The (.+) is no longer stunned\.$",
+            @"^The (.+) charges at the (.+)!$",
+            @"^The (.+) collides with the (.+)!$",
+            @"^The (.+) is knocked over!$",
+            @"^The (.+) looks surprised by the ferocity of The (.+)'s onslaught!$",
+            @"^They tangle together and (fall over|tumble forward)!$",
+            @"^The (.+) bounces backward!$",
+            @"^The (.+) collapses and falls to the ground from over-exertion\.$",
+            @"^The (.+) is knocked over and tumbles backward!$",
+            @"^The (.+) jumps away!$",
+        };
+
         // TODO: get rid of too general patterns, like "strikes" or "kicks"
         private static string[] CombatPatterns => new string[]
         {
-            @"strikes",
-            @"misses",
-            @"attacks",
+            @"^The flying (.+) strikes the (.+) in the (.+),? ?(.*)!$",
+            @"^The (.+) strikes the (.+) in the (.+),? (.+)!$",
             @"bashes",
-            @"charges at",
-            @"is no longer stunned",
-            @"stands up",
-            @"is knocked over",
-            @"tangle together",
-            @"collides with",
-            @"jumps away",
-            @"kicks",
+            @"^The (.+) kicks the (.+) in the (.+) with (its|his|her)",
             @"scratches",
-            @"bites",
-            @"looks surprised",
-            @"punches",
+            @"^The (.+) bites the (.+) in the (.+)",
+            @"^The (.+) punches the (.+) in the (.+)",
             @"hacks",
             @"slashes",
             @"slaps",
             @"stabs",
-            @"bounces backward",
             @"pushes",
-            @"falls over",
-            @"gives in to pain",
-            @"has become enraged",
-            @"An artery has been opened",
-            @"has been knocked unconscious",
+            @"^The (.+) falls over\.$",
+            @"^The (.+) gives in to pain\.$",
+            @"^The (.+) has become enraged!$",
+            @"^An artery has been opened by the attack",
+            @"^The (.+) has been knocked unconscious!$",
             @"ligament has been torn",
             @"tendon has been torn",
             @"^The force (bends|twists|pulls) the",
             @"^An artery has been opened",
             @"^A (.+) has been bruised",
-            @"is propelled away",
+            @"^The (.+) is propelled away by the force of the blow!",
             @"^The (.+) slams into an obstacle",
             @"^The (.+) looks sick",
             @"^The (.+) vomits",
@@ -99,15 +115,13 @@ namespace Snay.DFStat.Watch
             @"^The (.+) loses hold of the",
             @"^The (.+) has lodged firmly in the wound!$",
             @"^The (.+) shakes the (.+) around by",
-            @"^The (.+) collapses and falls to the ground from over-exertion\.$",
             @"has entered a martial trance!$",
             @"has left the martial trance\.$",
             @"latches on firmly!$",
             @"^A major artery has been opened by the attack!$",
             @"^A major artery in the (.+) has been opened by the attack!$",
             @"^An artery in the (.+) has been opened by the attack!$",
-            @"^A sensory nerve has been severed!$",
-            @"^A motor nerve has been severed!$",
+            @"^A (sensory|motor) nerve has been severed!$",
             @"^Many nerves have been severed!$",
             @"looks even more sick!$",
             @"breaks the grip of the (.+)'s (.+) on The (.+)'s (.+)\.$",
@@ -147,7 +161,6 @@ namespace Snay.DFStat.Watch
             @"^The (.+) slams into the (.+)\!$",
             @"^The (.+) shoots out thick strands of webbing\!$",
             @"^The (.+) bends the (.+)'s (.+) with The (.+)'s (.+)(,?.*)!$",
-
         };
 
         public const string RepeatedLinePattern =
@@ -263,6 +276,8 @@ namespace Snay.DFStat.Watch
         {
             @"^(.+), a (.+), is visiting\.$",
             @"^(.+), (.+) is visiting\.$",
+            @"^(.+) and others have returned\.$",
+            @"^(.+) have returned\.$",
         };
 
         private static string[] JobSuspendedPatterns => new string[]
@@ -302,6 +317,7 @@ namespace Snay.DFStat.Watch
         {
             @"^(.+), (.+) has been re-elected\.$",
             @"^After a polite discussion with local rivals, (.+) has claimed the position of (.+) of (.+)\.$",
+            @"^The (.+), a (.+) guild, has been established\.$",
         };
 
         private static string[] DiscoveryPatterns = new string[]
@@ -327,6 +343,23 @@ namespace Snay.DFStat.Watch
         private static string[] CaveInPatterns = new string[]
         {
             @"^A section of the cavern has collapsed!$",
+        };
+
+        private static string[] ArtDefacementPatterns = new string[]
+        {
+            @"^A masterwork of (.+) has been lost!$",
+        };
+
+        private static string[] AnimalKnowledgePatterns = new string[]
+        {
+            @"^The dwarves of (.+) are now expert (.+) trainers\.$",
+            @"^The dwarves of (.+) are now quite knowledgeable (.+) trainers\.$",
+        };
+
+        private static string[] NamedWeaponsPatterns = new string[]
+        {
+            @"^(.+), (.+) has grown attached to a (.+)!$",
+            @"^(.+), (.+) has bestowed the name (.+) upon a (.+)!$",
         };
 
         private const string ForgottenBeastHasComePattern =

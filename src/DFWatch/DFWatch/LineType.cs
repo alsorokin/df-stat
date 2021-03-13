@@ -4,6 +4,7 @@
     {
         General,
         Combat,
+        CombatMinor,
         ForgottenBeast,
         DFHack,
         Mandate,
@@ -33,5 +34,8 @@
         Adamantine,
         Minerals,
         CaveIn,
+        ArtDefacement,
+        AnimalKnowledge,
+        NamedWeapons,
     }
 }

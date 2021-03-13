@@ -24,10 +24,16 @@
         </Grid.RowDefinitions>
         <TabControl Grid.Column="0" Grid.Row="0" SelectionChanged="TabControl_SelectionChanged">
             <TabItem Name="MainTab" Header="Main">
-                <ListBox x:Name="LogBox" Margin="10,10,10,10" MinWidth="350"  
-                 Background="Black" HorizontalAlignment="Stretch" 
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.IsDeferredScrollingEnabled="True" VirtualizingPanel.ScrollUnit="Pixel"
-                 FontFamily="Consolas" FontSize="14" PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
+                <ListBox x:Name="LogBox"
+                         Margin="10,10,10,10"
+                         MinWidth="350"
+                         Background="Black"
+                         HorizontalAlignment="Stretch"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         VirtualizingPanel.ScrollUnit="Pixel"
+                         FontFamily="Consolas"
+                         FontSize="14"
+                         PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
@@ -43,10 +49,16 @@
                 </ListBox>
             </TabItem>
             <TabItem Name="CombatTab" Header="Combat">
-                <ListBox x:Name="CombatLogBox" Margin="10,10,10,10" MinWidth="350"
-                 Background="Black" HorizontalAlignment="Stretch" 
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False"
-                 FontFamily="Consolas" FontSize="14" PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
+                <ListBox x:Name="CombatLogBox"
+                         Margin="10,10,10,10"
+                         MinWidth="350"
+                         Background="Black"
+                         HorizontalAlignment="Stretch"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                         VirtualizingPanel.ScrollUnit="Pixel"
+                         FontFamily="Consolas"
+                         FontSize="14"
+                         PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
