@@ -49,29 +49,44 @@
                 </ListBox>
             </TabItem>
             <TabItem Name="CombatTab" Header="Combat">
-                <ListBox x:Name="CombatLogBox"
-                         Margin="10,10,10,10"
-                         MinWidth="350"
-                         Background="Black"
-                         HorizontalAlignment="Stretch"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                         VirtualizingPanel.ScrollUnit="Pixel"
-                         FontFamily="Consolas"
-                         FontSize="14"
-                         PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.Resources>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Background" Value="Black"/>
-                            <Setter Property="Foreground" Value="LightGray" />
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        </Style>
-                    </ListBox.Resources>
-                </ListBox>
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="18"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <CheckBox Name="EnableMinorCombatLines"
+                              Content="Enable minor combat events"
+                              Margin="10,2,0,0"
+                              IsChecked="True"
+                              Checked="EnableMinorCombatLines_Checked"
+                              Unchecked="EnableMinorCombatLines_Unchecked" 
+                              Grid.Row="0"/>
+                    <ListBox x:Name="CombatLogBox"
+                             Margin="10,4,10,10"
+                             MinWidth="350"
+                             Background="Black"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                             VirtualizingPanel.ScrollUnit="Pixel"
+                             FontFamily="Consolas"
+                             FontSize="14"
+                             PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick"
+                             Grid.Row="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.Resources>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Background" Value="Black"/>
+                                <Setter Property="Foreground" Value="LightGray" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            </Style>
+                        </ListBox.Resources>
+                    </ListBox>
+                </Grid>
             </TabItem>
         </TabControl>
         <Button Name="ToggleStats" Content=">" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Click="ToggleStats_Click" />

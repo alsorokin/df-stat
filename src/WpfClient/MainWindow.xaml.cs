@@ -40,11 +40,9 @@ namespace WpfClient
         private bool closing = false;
 
         private LogBoxItem lastLogItemAdded;
-
         private LogBoxItem lastCombatLogItemAdded;
 
         private GridLength statsColumnLeftWidth;
-
         private GridLength statsColumnRightWidth;
 
         private List<UIElement> leftPanelChildren = new();
@@ -59,6 +57,8 @@ namespace WpfClient
 
         private int logBoxItemsCap = 256;
         private int combatLogBoxItemsCap = 256;
+
+        private bool isMinorCombatLogsEnabled = true;
 
         public MainWindow()
         {
@@ -230,7 +230,7 @@ namespace WpfClient
             if (closing) return;
             if (brush == null) brush = Brushes.LightGray;
 
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 LogBoxItem item = new() { Text = line, Fore = brush };
                 LogBox.Items.Add(item);
@@ -251,10 +251,10 @@ namespace WpfClient
 
         private void AddCombatLine(string line, Brush brush = null)
         {
-            if (closing) return;
+            if (closing || !isMinorCombatLogsEnabled) return;
             if (brush == null) brush = Brushes.LightGray;
 
-            this.Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 LogBoxItem item = new() { Text = line, Fore = brush };
                 CombatLogBox.Items.Add(item);
@@ -305,10 +305,22 @@ namespace WpfClient
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.AddedItems.Count == 0)
+                return;
+
             TabItem item = e.AddedItems[0] as TabItem;
             if (item == MainTab)
             {
-                LogBox.ScrollIntoView(lastLogItemAdded);
+                Timer scrollTimer = new Timer(250d);
+                scrollTimer.Elapsed += (_, __) =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        LogBox.ScrollIntoView(lastLogItemAdded);
+                    });
+                    scrollTimer.Stop();
+                };
+                scrollTimer.Start();
             }
             else if (item == CombatTab)
             {
@@ -349,6 +361,12 @@ namespace WpfClient
                     break;
             }
         }
+
+        private void EnableMinorCombatLines_Checked(object sender, RoutedEventArgs e) =>
+            isMinorCombatLogsEnabled = true;
+
+        private void EnableMinorCombatLines_Unchecked(object sender, RoutedEventArgs e) =>
+            isMinorCombatLogsEnabled = false;
     }
 
     public class LogBoxItem
