@@ -57,6 +57,9 @@ namespace WpfClient
 
         private LayoutMode currentLayout = LayoutMode.StatsTwoColumns;
 
+        private int logBoxItemsCap = 256;
+        private int combatLogBoxItemsCap = 256;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -231,6 +234,15 @@ namespace WpfClient
             {
                 LogBoxItem item = new() { Text = line, Fore = brush };
                 LogBox.Items.Add(item);
+
+                if (LogBox.Items.Count >= logBoxItemsCap + 10)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        LogBox.Items.RemoveAt(0);
+                    }
+                }
+
                 LogBox.UpdateLayout();
                 LogBox.ScrollIntoView(item);
                 lastLogItemAdded = item;
@@ -246,6 +258,15 @@ namespace WpfClient
             {
                 LogBoxItem item = new() { Text = line, Fore = brush };
                 CombatLogBox.Items.Add(item);
+
+                if (CombatLogBox.Items.Count >= combatLogBoxItemsCap + 10)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        CombatLogBox.Items.RemoveAt(0);
+                    }
+                }
+
                 CombatLogBox.UpdateLayout();
                 CombatLogBox.ScrollIntoView(item);
                 lastCombatLogItemAdded = item;
