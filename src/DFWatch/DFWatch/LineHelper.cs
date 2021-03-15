@@ -161,6 +161,7 @@ namespace Snay.DFStat.Watch
             @"^The (.+) slams into the (.+)\!$",
             @"^The (.+) shoots out thick strands of webbing\!$",
             @"^The (.+) bends the (.+)'s (.+) with The (.+)'s (.+)(,?.*)!$",
+            @"^An artery in (.+) has been opened by the attack$",
         };
 
         public const string RepeatedLinePattern =
@@ -352,8 +353,9 @@ namespace Snay.DFStat.Watch
 
         private static string[] AnimalKnowledgePatterns = new string[]
         {
-            @"^The dwarves of (.+) are now expert (.+) trainers\.$",
+            @"^The dwarves of (.+) now know a few facts about (.+) training\.$",
             @"^The dwarves of (.+) are now quite knowledgeable (.+) trainers\.$",
+            @"^The dwarves of (.+) are now expert (.+) trainers\.$",
         };
 
         private static string[] NamedWeaponsPatterns = new string[]
