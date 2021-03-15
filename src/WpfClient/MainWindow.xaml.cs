@@ -53,7 +53,8 @@ namespace WpfClient
             "eqMismatch"
         };
 
-        private LayoutMode currentLayout = LayoutMode.StatsTwoColumns;
+        private HorizontalLayoutMode currentHorizontalLayout = HorizontalLayoutMode.StatsTwoColumns;
+        private VerticalLayoutMode currentVerticalLayout = VerticalLayoutMode.NoTabs;
 
         private int logBoxItemsCap = 256;
         private int combatLogBoxItemsCap = 256;
@@ -251,7 +252,7 @@ namespace WpfClient
 
         private void AddCombatLine(string line, Brush brush = null)
         {
-            if (closing || !isMinorCombatLogsEnabled) return;
+            if (closing) return;
             if (brush == null) brush = Brushes.LightGray;
 
             Dispatcher.Invoke(() =>
@@ -276,6 +277,9 @@ namespace WpfClient
         private void AddLine(Line line, Brush brush = null)
         {
             if (line.Traits.Any(t => ignoredTags.Contains(t)))
+                return;
+
+            if (line.LnType == LineType.CombatMinor && !isMinorCombatLogsEnabled)
                 return;
 
             if (line.LnType == LineType.Combat || line.LnType == LineType.CombatMinor)
@@ -328,11 +332,11 @@ namespace WpfClient
             }
         }
 
-        private void ToggleStats_Click(object sender, RoutedEventArgs e)
+        private void ChangeHorizontalLayoutButton_Click(object sender, RoutedEventArgs e)
         {
-            switch (currentLayout)
+            switch (currentHorizontalLayout)
             {
-                case LayoutMode.StatsTwoColumns:
+                case HorizontalLayoutMode.StatsTwoColumns:
                     foreach (UIElement child in leftPanelChildren)
                     {
                         StatPanelLeft.Children.Remove(child);
@@ -340,15 +344,15 @@ namespace WpfClient
                     }
                     statsColumnLeftWidth = StatsColumnLeft.Width;
                     StatsColumnLeft.Width = new GridLength(0, GridUnitType.Pixel);
-                    currentLayout = LayoutMode.StatsOneColumn;
+                    currentHorizontalLayout = HorizontalLayoutMode.StatsOneColumn;
                     break;
-                case LayoutMode.StatsOneColumn:
-                    ToggleStats.Content = "<";
+                case HorizontalLayoutMode.StatsOneColumn:
+                    ChangeHorizontalLayoutButton.Content = "<";
                     statsColumnRightWidth = StatsColumnRight.Width;
                     StatsColumnRight.Width = new GridLength(0, GridUnitType.Pixel);
-                    currentLayout = LayoutMode.NoStats;
+                    currentHorizontalLayout = HorizontalLayoutMode.NoStats;
                     break;
-                case LayoutMode.NoStats:
+                case HorizontalLayoutMode.NoStats:
                     StatsColumnLeft.Width = statsColumnLeftWidth;
                     StatsColumnRight.Width = statsColumnRightWidth;
                     foreach (UIElement child in leftPanelChildren)
@@ -356,8 +360,8 @@ namespace WpfClient
                         StatPanelRight.Children.Remove(child);
                         StatPanelLeft.Children.Insert(0, child);
                     }
-                    ToggleStats.Content = ">";
-                    currentLayout = LayoutMode.StatsTwoColumns;
+                    ChangeHorizontalLayoutButton.Content = ">";
+                    currentHorizontalLayout = HorizontalLayoutMode.StatsTwoColumns;
                     break;
             }
         }
@@ -367,6 +371,35 @@ namespace WpfClient
 
         private void EnableMinorCombatLines_Unchecked(object sender, RoutedEventArgs e) =>
             isMinorCombatLogsEnabled = false;
+
+        private void ChangeVerticalLayoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            switch (currentVerticalLayout)
+            {
+                case VerticalLayoutMode.NoTabs:
+                    MainGrid.Children.Remove(CombatGrid);
+                    CombatTab.Content = CombatGrid;
+                    MainGrid.Children.Remove(LogBox);
+                    LogBox.Margin = new Thickness(LogBox.Margin.Left, 10, LogBox.Margin.Right, LogBox.Margin.Bottom);
+                    MainTab.Content = LogBox;
+                    MainTabber.Visibility = Visibility.Visible;
+
+                    currentVerticalLayout = VerticalLayoutMode.WithTabs;
+                    ChangeVerticalLayoutButton.Content = "v";
+                    break;
+                case VerticalLayoutMode.WithTabs:
+                    CombatTab.Content = null;
+                    MainGrid.Children.Add(CombatGrid);
+                    MainTab.Content = null;
+                    LogBox.Margin = new Thickness(LogBox.Margin.Left, 5, LogBox.Margin.Right, LogBox.Margin.Bottom);
+                    MainGrid.Children.Add(LogBox);
+                    MainTabber.Visibility = Visibility.Collapsed;
+
+                    currentVerticalLayout = VerticalLayoutMode.NoTabs;
+                    ChangeVerticalLayoutButton.Content = "^";
+                    break;
+            }
+        }
     }
 
     public class LogBoxItem
@@ -375,10 +408,16 @@ namespace WpfClient
         public Brush Fore { get; set; }
     }
 
-    public enum LayoutMode
+    public enum HorizontalLayoutMode
     {
         StatsTwoColumns,
         StatsOneColumn,
-        NoStats
+        NoStats,
+    }
+
+    public enum VerticalLayoutMode
+    {
+        WithTabs,
+        NoTabs,
     }
 }

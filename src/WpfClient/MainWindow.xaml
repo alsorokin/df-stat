@@ -19,50 +19,25 @@
             <ColumnDefinition Name="StatsColumnRight" Width="200"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition MaxHeight="16"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <!--<RowDefinition Height="45"></RowDefinition>-->
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <TabControl Grid.Column="0" Grid.Row="0" SelectionChanged="TabControl_SelectionChanged">
-            <TabItem Name="MainTab" Header="Main">
-                <ListBox x:Name="LogBox"
-                         Margin="10,10,10,10"
-                         MinWidth="350"
-                         Background="Black"
-                         HorizontalAlignment="Stretch"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         VirtualizingPanel.ScrollUnit="Pixel"
-                         FontFamily="Consolas"
-                         FontSize="14"
-                         PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                    <ListBox.Resources>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Background" Value="Black"/>
-                            <Setter Property="Foreground" Value="LightGray" />
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        </Style>
-                    </ListBox.Resources>
-                </ListBox>
-            </TabItem>
-            <TabItem Name="CombatTab" Header="Combat">
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="18"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <CheckBox Name="EnableMinorCombatLines"
+        <Button Name="ChangeVerticalLayoutButton" Content="^" HorizontalAlignment="Stretch" Grid.Row="0" FontSize="9" Click="ChangeVerticalLayoutButton_Click"/>
+        <Grid Name="CombatGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="18"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <CheckBox Name="EnableMinorCombatLines"
                               Content="Enable minor combat events"
                               Margin="10,2,0,0"
                               IsChecked="True"
                               Checked="EnableMinorCombatLines_Checked"
                               Unchecked="EnableMinorCombatLines_Unchecked" 
                               Grid.Row="0"/>
-                    <ListBox x:Name="CombatLogBox"
-                             Margin="10,4,10,10"
+            <ListBox x:Name="CombatLogBox"
+                             Margin="10,4,10,5"
                              MinWidth="350"
                              Background="Black"
                              HorizontalAlignment="Stretch"
@@ -73,24 +48,57 @@
                              FontSize="14"
                              PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick"
                              Grid.Row="1">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.Resources>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Background" Value="Black"/>
-                                <Setter Property="Foreground" Value="LightGray" />
-                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                            </Style>
-                        </ListBox.Resources>
-                    </ListBox>
-                </Grid>
-            </TabItem>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Black"/>
+                        <Setter Property="Foreground" Value="LightGray" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+        </Grid>
+        <ListBox Name="LogBox"
+                 Margin="10,5,10,10"
+                 MinWidth="350"
+                 Background="Black"
+                 HorizontalAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VirtualizingPanel.ScrollUnit="Pixel"
+                 FontFamily="Consolas"
+                 FontSize="14"
+                 Grid.Row="2"
+                 PreviewMouseDoubleClick="LogBox_PreviewMouseDoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Foreground="{Binding Fore}" TextWrapping="Wrap" Text="{Binding Text}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Black"/>
+                    <Setter Property="Foreground" Value="LightGray" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.Resources>
+        </ListBox>
+        <TabControl Name="MainTabber" Visibility="Collapsed" Grid.Column="0" Grid.Row="1" Grid.RowSpan="2"  SelectionChanged="TabControl_SelectionChanged">
+            <TabItem Name="MainTab" Header="Main" />
+            <TabItem Name="CombatTab" Header="Combat" />
         </TabControl>
-        <Button Name="ToggleStats" Content=">" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Click="ToggleStats_Click" />
-        <StackPanel x:Name="StatPanelLeft" Grid.RowSpan="1" HorizontalAlignment="Right" Margin="0,0,0,0" Grid.Column="2">
+        <Button Name="ChangeHorizontalLayoutButton"
+                Content=">"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Grid.Column="1"
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Click="ChangeHorizontalLayoutButton_Click" />
+        <StackPanel x:Name="StatPanelLeft" Grid.RowSpan="3" HorizontalAlignment="Right" Margin="0,0,0,0" Grid.Column="2">
             <StackPanel.Resources>
                 <Style TargetType="Label">
                     <Setter Property="FontFamily" Value="Courier New"></Setter>
@@ -98,7 +106,7 @@
                 </Style>
             </StackPanel.Resources>
         </StackPanel>
-        <StackPanel x:Name="StatPanelRight" Margin="0,0,0,0" Grid.RowSpan="1" HorizontalAlignment="Right" Grid.Column="3">
+        <StackPanel x:Name="StatPanelRight" Margin="0,0,0,0" Grid.RowSpan="3" HorizontalAlignment="Right" Grid.Column="3">
             <StackPanel.Resources>
                 <Style TargetType="Label">
                     <Setter Property="FontFamily" Value="Courier New"></Setter>
