@@ -18,11 +18,11 @@ namespace Snay.DFStat.Watch.Achievements
 
         public virtual int MaxStage => ProgressNeededPerStage.Length - 1;
 
-        private int progress;
+        public State State { get; private set; }
 
-        public virtual int Progress 
+        public virtual int Progress
         {
-            get => progress; 
+            get => State.Progress;
             protected set
             {
                 if (Progress >= ProgressNeededPerStage.Last())
@@ -36,7 +36,7 @@ namespace Snay.DFStat.Watch.Achievements
                 int oldMaxProgress = MaxProgress;
                 int oldStage = Stage;
                 int oldProgressPc = ProgressPercent;
-                progress = value;
+                State.Progress = value;
                 OnProgress();
 
                 if (value >= oldMaxProgress && oldStage != MaxStage)
@@ -68,6 +68,8 @@ namespace Snay.DFStat.Watch.Achievements
         public Achievement(GameLogWatcher watcher)
         {
             this.watcher = watcher;
+            this.State = new State();
+            this.State.AchievementName = Name;
         }
 
         protected void OnNewStageUnlocked()
@@ -83,6 +85,11 @@ namespace Snay.DFStat.Watch.Achievements
         protected void OnProgressPc()
         {
             ProgressPcChanged?.Invoke(this);
+        }
+
+        internal void SetState(State state)
+        {
+            this.State = state;
         }
     }
 }

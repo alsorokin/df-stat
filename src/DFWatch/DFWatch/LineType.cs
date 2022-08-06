@@ -37,5 +37,6 @@
         ArtDefacement,
         AnimalKnowledge,
         NamedWeapons,
+        Achievements,
     }
 }

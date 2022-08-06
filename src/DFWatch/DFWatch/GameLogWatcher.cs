@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
+using Watch;
 
 namespace Snay.DFStat.Watch
 {
@@ -25,7 +28,6 @@ namespace Snay.DFStat.Watch
             GameLogFilePath = GetGameLogPath(!string.IsNullOrEmpty(workingDir) ? workingDir : Directory.GetCurrentDirectory());
             RecentLines = new();
         }
-
 
         public void StartWatching()
         {

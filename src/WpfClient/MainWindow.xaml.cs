@@ -1,4 +1,5 @@
 ﻿using Snay.DFStat.Watch;
+using Snay.DFStat.Watch.Achievements;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -68,15 +69,12 @@ namespace WpfClient
             Watcher = new("C:/Games/Dwarf Fortress/");
             AddLine("Reading game log: " + Watcher.GameLogFilePath);
 
-            // TODO: Find out why unicode characters are not displayed:
-            //AddLine("giant cave spider silk hood!", Brushes.LightPink);
-            //TextBlock txt = new();
-            //txt.Text = "giant cave spider silk hood!";
-            //StatPanelLeft.Children.Add(txt);
-
             Watcher.LineAdded += Watcher_LineAdded;
             Watcher.StartWatching();
             //Watcher.ScanOnce();
+            AchievementTracker tracker = new(Watcher);
+            tracker.ProgressPcChanged += Tracker_ProgressPcChanged;
+            tracker.NewStageUnlocked += Tracker_NewStageUnlocked;
 
             Stats = new StatLabels(StatPanelLeft, StatPanelRight);
 
@@ -95,7 +93,24 @@ namespace WpfClient
             FindGameProcess();
         }
 
-        private void Watcher_LineAdded(object sender, Snay.DFStat.Watch.Line line)
+        private static string FixUnicode(string input)
+        {
+            return input.Replace("", "✼");
+        }
+
+        private void Tracker_NewStageUnlocked(Achievement sender)
+        {
+            Line line = new Line(LineType.Achievements, $"Unlocked {sender.Name}, stage {sender.Stage}!");
+            AddLine(line, Brushes.Yellow);
+        }
+
+        private void Tracker_ProgressPcChanged(Achievement sender)
+        {
+            Line line = new Line(LineType.Achievements, $"{sender.Name} {sender.Stage} => {sender.Stage + 1}: {sender.ProgressPercent}%");
+            AddLine(line, Brushes.Beige);
+        }
+
+        private void Watcher_LineAdded(object sender, Line line)
         {
             Brush brush = null;
 
@@ -230,6 +245,7 @@ namespace WpfClient
         {
             if (closing) return;
             if (brush == null) brush = Brushes.LightGray;
+            line = FixUnicode(line);
 
             Dispatcher.Invoke(() =>
             {
@@ -254,6 +270,7 @@ namespace WpfClient
         {
             if (closing) return;
             if (brush == null) brush = Brushes.LightGray;
+            line = FixUnicode(line);
 
             Dispatcher.Invoke(() =>
             {

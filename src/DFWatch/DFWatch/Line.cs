@@ -13,7 +13,7 @@ namespace Snay.DFStat.Watch
         {
             LnType = lnType;
             Text = text;
-            Traits = traits.ToList() ?? new List<string>();
+            Traits = traits?.ToList() ?? new List<string>();
         }
     }
 }

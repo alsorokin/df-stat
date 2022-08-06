@@ -1,9 +1,7 @@
-﻿using Snay.DFStat.Watch;
-using Snay.DFStat.Watch.Achievements;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Watch.Achievements
+namespace Snay.DFStat.Watch.Achievements
 {
     class Adventurer : Achievement
     {
