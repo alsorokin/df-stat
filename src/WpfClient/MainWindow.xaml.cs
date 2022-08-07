@@ -20,16 +20,6 @@ namespace WpfClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        [DllImport("Kernel32.dll")]
-        public static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, UInt32 nSize, ref UInt32 lpNumberOfBytesRead);
-
-        public static byte[] Read(IntPtr handle, IntPtr address, UInt32 size, ref UInt32 bytes)
-        {
-            byte[] buffer = new byte[size];
-            ReadProcessMemory(handle, address, buffer, size, ref bytes);
-            return buffer;
-        }
-
         private Timer PollingTimer { get; set; }
 
         private Process GameProcess { get; set; }
@@ -197,26 +187,10 @@ namespace WpfClient
             {
                 if ((GameProcess != null && !GameProcess.HasExited) || FindGameProcess())
                 {
-                    Stats.SuppliesLabel.Content          = $"Supplies:        {GetInt(Map.Supplies)}";
-                    Stats.DrinksLabel.Content            = $"Drinks:          {GetInt(Map.Drinks)}";
-                    Stats.MeatLabel.Content              = $"Meat:            {GetInt(Map.Meat)}";
-                    Stats.FishLabel.Content              = $"Fish:            {GetInt(Map.Fish)}";
-                    Stats.PlantLabel.Content             = $"Plant:           {GetInt(Map.Plant)}";
-                    Stats.OtherFoodLabel.Content         = $"Other Food:      {GetInt(Map.OtherFood)}";
-                    Stats.SeedsLabel.Content             = $"Seeds:           {GetInt(Map.Seeds)}";
-
-                    Stats.PopLabel.Content               = $"Population:      {GetInt(Map.Population)}";
-
-                    Stats.NetWorthLabel.Content          = $"Net Worth:       {GetInt(Map.NetWorth)}";
-                    Stats.ArchitectureWorthLabel.Content = $"Architecture:    {GetInt(Map.Architecture)}";
-                    Stats.ArmorGarbWorthLabel.Content    = $"Armor & Garb:    {GetInt(Map.ArmorGarb)}";
-                    Stats.DisplayedWorthLabel.Content    = $"Displayed:       {GetInt(Map.Displayed)}";
-                    Stats.HeldWornWorthLabel.Content     = $"Held/Worn:       {GetInt(Map.HeldWorn)}";
-                    Stats.OtherObjectsWorthLabel.Content = $"Other Objects:   {GetInt(Map.OtherObjects)}";
-                    Stats.WeaponsWorthLabel.Content      = $"Weapons:         {GetInt(Map.Weapons)}";
-                    Stats.FurnitureWorthLabel.Content    = $"Furniture:       {GetInt(Map.Furniture)}";
-                    Stats.ImportedWealthLabel.Content    = $"Imported Wealth: {GetInt(Map.ImportedWealth)}";
-                    Stats.ExportedWealthLabel.Content    = $"Exported Wealth: {GetInt(Map.ExportedWealth)}";
+                    foreach (Map map in Enum.GetValues(typeof(Map)))
+                    {
+                        Stats.UpdateStat(map, GetInt(map));
+                    }
                 }
             });
         }
@@ -240,8 +214,8 @@ namespace WpfClient
 
             ProcessModule module = GameProcess.MainModule;
 
-            UInt32 bytesRead = 0;
-            var bytes = Read(GameProcess.Handle, module.BaseAddress + (int)map, 4, ref bytesRead);
+            uint bytesRead = 0;
+            var bytes = MemoryReader.Read(GameProcess.Handle, module.BaseAddress + (int)map, 4, ref bytesRead);
 
             return (bytes[3] * 256 * 256 * 256) + (bytes[2] * 256 * 256) + (bytes[1] * 256) + bytes[0];
         }

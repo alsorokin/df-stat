@@ -7,7 +7,7 @@
         xmlns:properties="clr-namespace:WpfClient.Properties" x:Class="WpfClient.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="768" Width="1024" Closing="Window_Closing">
-    <Grid x:Name="MainGrid" ShowGridLines="False" Background="Gray">
+    <Grid x:Name="MainGrid" ShowGridLines="False" Background="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
         <Grid.Resources>
             <Style TargetType="{x:Type StackPanel}">
                 <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -16,7 +16,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="350" Width="*"/>
             <ColumnDefinition Width="12"/>
-            <ColumnDefinition x:Name="StatsColumnLeft" Width="180"/>
+            <ColumnDefinition x:Name="StatsColumnLeft" Width="180" />
             <ColumnDefinition x:Name="StatsColumnRight" Width="200"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -100,7 +100,7 @@
                 Grid.Row="0"
                 Grid.RowSpan="3"
                 Click="ChangeHorizontalLayoutButton_Click" />
-        <StackPanel x:Name="StatPanelLeft" Grid.RowSpan="3" HorizontalAlignment="Right" Margin="0,0,0,0" Grid.Column="2">
+        <StackPanel x:Name="StatPanelLeft" Grid.RowSpan="3" HorizontalAlignment="Stretch" Margin="0,0,0,0" Grid.Column="2">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}">
                     <Setter Property="FontFamily" Value="Courier New"/>
@@ -108,10 +108,10 @@
                 </Style>
             </StackPanel.Resources>
         </StackPanel>
-        <StackPanel x:Name="StatPanelRight" Margin="0,0,0,0" Grid.RowSpan="3" HorizontalAlignment="Right" Grid.Column="3">
+        <StackPanel x:Name="StatPanelRight" Margin="0,0,0,0" Grid.RowSpan="3" HorizontalAlignment="Stretch" Grid.Column="3">
             <StackPanel.Resources>
                 <Style TargetType="{x:Type Label}">
-                    <Setter Property="FontFamily" Value="Courier New"/>
+                    <Setter Property="FontFamily" Value="Consolas"/>
                 </Style>
             </StackPanel.Resources>
         </StackPanel>

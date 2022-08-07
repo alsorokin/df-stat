@@ -1,55 +1,88 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace WpfClient
 {
     public class StatLabels
     {
-        public Label SuppliesLabel;
-        public Label DrinksLabel;
-        public Label PlantLabel;
-        public Label SeedsLabel;
-        public Label OtherFoodLabel;
-        public Label MeatLabel;
-        public Label FishLabel;
-
-        public Label PopLabel;
-
-        public Label NetWorthLabel;
-        public Label WeaponsWorthLabel;
-        public Label ArmorGarbWorthLabel;
-        public Label FurnitureWorthLabel;
-        public Label OtherObjectsWorthLabel;
-        public Label ArchitectureWorthLabel;
-        public Label DisplayedWorthLabel;
-        public Label HeldWornWorthLabel;
-        public Label ImportedWealthLabel;
-        public Label ExportedWealthLabel;
-
-        public StatLabels (StackPanel statPanelLeft, StackPanel statPanelRight)
+        private static List<(string, Map)> LeftStats = new()
         {
-            statPanelLeft.Children.Add(new Separator());
-            statPanelLeft.Children.Add(SuppliesLabel = new());
-            statPanelLeft.Children.Add(MeatLabel = new());
-            statPanelLeft.Children.Add(FishLabel = new());
-            statPanelLeft.Children.Add(PlantLabel = new());
-            statPanelLeft.Children.Add(DrinksLabel = new());
-            statPanelLeft.Children.Add(SeedsLabel = new());
-            statPanelLeft.Children.Add(OtherFoodLabel = new());
-            statPanelLeft.Children.Add(new Separator());
-            statPanelLeft.Children.Add(PopLabel = new());
+            ("Supplies", Map.Supplies),
+            ("Drinks", Map.Drinks),
+            ("Meat", Map.Meat),
+            ("Fish", Map.Fish),
+            ("Plant", Map.Plant),
+            ("Other Food", Map.OtherFood),
+            ("Seeds", Map.Seeds),
+            ("Population", Map.Population),
+        };
 
-            statPanelRight.Children.Add(new Separator());
-            statPanelRight.Children.Add(NetWorthLabel = new());
-            statPanelRight.Children.Add(WeaponsWorthLabel = new());
-            statPanelRight.Children.Add(ArmorGarbWorthLabel = new());
-            statPanelRight.Children.Add(FurnitureWorthLabel = new());
-            statPanelRight.Children.Add(OtherObjectsWorthLabel = new());
-            statPanelRight.Children.Add(ArchitectureWorthLabel = new());
-            statPanelRight.Children.Add(DisplayedWorthLabel = new());
-            statPanelRight.Children.Add(HeldWornWorthLabel = new());
-            statPanelRight.Children.Add(ImportedWealthLabel = new());
-            statPanelRight.Children.Add(ExportedWealthLabel = new());
+        private static List<(string, Map)> RightStats = new()
+        {
+            ("Net Worth", Map.NetWorth),
+            ("Architecture", Map.Architecture),
+            ("Armor & Garb", Map.ArmorGarb),
+            ("Displayed", Map.Displayed),
+            ("Held/Worn", Map.HeldWorn),
+            ("Other Objects", Map.OtherObjects),
+            ("Weapons", Map.Weapons),
+            ("Furniture", Map.Furniture),
+            ("Imported Wealth", Map.ImportedWealth),
+            ("Exported Wealth", Map.ExportedWealth),
+        };
 
+        private Dictionary<Map, Label> leftPanelLabels = new();
+        private Dictionary<Map, Label> rightPanelLabels = new();
+
+        public StatLabels(StackPanel statPanelLeft, StackPanel statPanelRight)
+        {
+            //statPanelLeft.Children.Add(new Separator());
+            foreach ((string, Map) leftStat in LeftStats)
+            {
+                Grid grid = new Grid();
+                grid.Children.Add(new Label() { Content = leftStat.Item1, HorizontalAlignment = HorizontalAlignment.Left });
+                Label valueLabel = new Label() { Content = "0", HorizontalAlignment = HorizontalAlignment.Right };
+                grid.Children.Add(valueLabel);
+                leftPanelLabels.Add(leftStat.Item2, valueLabel);
+                statPanelLeft.Children.Add(grid);
+            }
+
+            //statPanelRight.Children.Add(new Separator());
+            foreach ((string, Map) rightStat in RightStats)
+            {
+                Grid grid = new Grid();
+                grid.Children.Add(new Label() { Content = rightStat.Item1 });
+                Label valueLabel = new Label() { Content = "0", HorizontalAlignment = HorizontalAlignment.Right };
+                grid.Children.Add(valueLabel);
+                rightPanelLabels.Add(rightStat.Item2, valueLabel);
+                statPanelRight.Children.Add(grid);
+            }
+        }
+
+        public void UpdateStat(Map stat, int value)
+        {
+            Label statValueLabel;
+            if (leftPanelLabels.TryGetValue(stat, out statValueLabel) ||
+                rightPanelLabels.TryGetValue(stat, out statValueLabel))
+            {
+                statValueLabel.Content = InsertDelimiters(value);
+            }
+        }
+
+        private static string InsertDelimiters(int value)
+        {
+            string result = value.ToString();
+
+            // Insert thousands delimiters
+            string intermediateResult = result;
+            for (int i = result.Length - 3; i > 0; i -= 3)
+            {
+                intermediateResult = intermediateResult.Insert(i, ",");
+            }
+            result = intermediateResult;
+
+            return result;
         }
     }
 }
