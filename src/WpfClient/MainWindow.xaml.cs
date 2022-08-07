@@ -80,19 +80,6 @@ namespace WpfClient
             FindGameProcess();
         }
 
-        private static string FixUnicode(string input)
-        {
-            // "giant cave spider silk hood!"
-            // string result = input.Replace("", "✼");
-
-            // with her (�bismuth bronze shield�), bruising the muscle
-            // TODO: Fix the false trigger of the first replace
-            //result = result.Replace("�", "«");
-            //result = result.Replace("�", "»");
-
-            return input;
-        }
-
         private void Tracker_NewStageUnlocked(Achievement sender)
         {
             Line line = new Line(LineType.Achievements, $"Unlocked {sender.Name}, stage {sender.Stage}!");
@@ -224,7 +211,6 @@ namespace WpfClient
         {
             if (closing) return;
             if (brush == null) brush = Brushes.LightGray;
-            line = FixUnicode(line);
 
             Dispatcher.Invoke(() =>
             {
@@ -249,7 +235,6 @@ namespace WpfClient
         {
             if (closing) return;
             if (brush == null) brush = Brushes.LightGray;
-            line = FixUnicode(line);
 
             Dispatcher.Invoke(() =>
             {
