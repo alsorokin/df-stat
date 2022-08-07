@@ -68,8 +68,7 @@ namespace WpfClient
             AddLine("Reading game log: " + Watcher.GameLogFilePath);
 
             Watcher.LineAdded += Watcher_LineAdded;
-            Watcher.StartWatching();
-            Watcher.ScanOnce();
+            Watcher.StartWatching(false);
             AchievementTracker tracker = new(Watcher);
             tracker.ProgressPcChanged += Tracker_ProgressPcChanged;
             tracker.NewStageUnlocked += Tracker_NewStageUnlocked;

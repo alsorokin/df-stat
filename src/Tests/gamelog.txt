@@ -1,4 +1,4 @@
-ï»¿The elk bird falls over.
+The elk bird falls over.
 The elk bird gives in to pain.
 The elk bird has become enraged!
 An artery has been opened by the attack!
@@ -26,3 +26,7 @@ The human lasher loses hold of the X({large copper right gauntlet})X.
 The Axe Lord shakes the human pikeman around by the upper body, tearing apart the upper body's fat!
 The XX({large bronze mail shirt})XX is ripped to shreds!
 The XX({large moose leather robe})XX breaks!
+The Axe Lord strikes at the Swordmaster but the shot is blocked with the steel shield!
+Datan Somkikrost has improved a ðhoney bee wax scepterð masterfully!
+The wrestler strikes at the speardwarf but the shot is blocked with the (®bronze shield¯)!
+The speardwarf stabs the wrestler in the right hand with her *silver spear*, lightly tapping the target!
