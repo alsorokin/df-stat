@@ -105,7 +105,13 @@ namespace Snay.DFStat.Watch
             LineType type = LineType.General;
             bool isRepeatedLine = Regex.IsMatch(text, LineHelper.RepeatedLinePattern);
             if (isRepeatedLine)
+            {
                 text = lastLine;
+            }
+            else
+            {
+                lastLine = text;
+            }
 
             foreach (KeyValuePair<LineType, string[]> mapping in LineHelper.PatternMappings)
             {
@@ -125,12 +131,12 @@ namespace Snay.DFStat.Watch
                 }
             }
 
-            if (!isRepeatedLine)
-                lastLine = text;
             Line line = new(type, text, traits);
             RecentLines.Enqueue(line);
             if (RecentLines.Count() > MaxRecentLinesCount)
+            {
                 RecentLines.Dequeue();
+            }
             LineAdded?.Invoke(this, line);
         }
 

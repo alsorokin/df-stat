@@ -2,9 +2,10 @@
 using Snay.DFStat.Watch.Achievements;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,11 +51,13 @@ namespace WpfClient
         private int logBoxItemsCap = 256;
         private int combatLogBoxItemsCap = 256;
 
+        private const string manuallyRepeatedLinePattern = @"x(\d+)$";
+
         public MainWindow()
         {
             InitializeComponent();
 
-            Watcher = new("C:/Games/Dwarf Fortress/");
+            Watcher = new("C:\\Games\\Dwarf Fortress");
             AddLine("Reading game log: " + Watcher.GameLogFilePath);
 
             Watcher.LineAdded += Watcher_LineAdded;
@@ -207,9 +210,43 @@ namespace WpfClient
             return (bytes[3] * 256 * 256 * 256) + (bytes[2] * 256 * 256) + (bytes[1] * 256) + bytes[0];
         }
 
+        private void DuplicateLastLine()
+        {
+            Regex regex = new Regex(manuallyRepeatedLinePattern);
+            Match match = regex.Match(lastLogItemAdded.Text);
+            if (match.Success && int.TryParse(match.Groups[1].Value, out int number))
+            {
+                lastLogItemAdded.Text = lastLogItemAdded.Text.Substring(0, match.Groups[1].Index) + ++number;
+            }
+            else
+            {
+                lastLogItemAdded.Text += " x2";
+            }
+        }
+
+        private void DuplicateLastCombatLine()
+        {
+            Regex regex = new Regex(manuallyRepeatedLinePattern);
+            Match match = regex.Match(lastCombatLogItemAdded.Text);
+            if (match.Success && int.TryParse(match.Groups[1].Value, out int number))
+            {
+                lastCombatLogItemAdded.Text = lastCombatLogItemAdded.Text.Substring(0, match.Groups[1].Index) + ++number;
+            }
+            else
+            {
+                lastCombatLogItemAdded.Text += " x2";
+            }
+        }
+
         private void AddLine(string line, Brush brush = null)
         {
             if (closing) return;
+            if (lastLogItemAdded != null && lastLogItemAdded.Text.StartsWith(line))
+            {
+                DuplicateLastLine();
+                return;
+            }
+
             if (brush == null) brush = Brushes.LightGray;
 
             Dispatcher.Invoke(() =>
@@ -234,6 +271,12 @@ namespace WpfClient
         private void AddCombatLine(string line, Brush brush = null)
         {
             if (closing) return;
+            if (lastCombatLogItemAdded != null && lastCombatLogItemAdded.Text.StartsWith(line))
+            {
+                DuplicateLastCombatLine();
+                return;
+            }
+
             if (brush == null) brush = Brushes.LightGray;
 
             Dispatcher.Invoke(() =>
@@ -395,10 +438,24 @@ namespace WpfClient
         }
     }
 
-    public class LogBoxItem
+    public class LogBoxItem : INotifyPropertyChanged
     {
-        public string Text { get; set; }
+        private string text;
+        public string Text
+        {
+            get => text;
+            set
+            {
+                text = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(nameof(Text)));
+                }
+            }
+        }
         public Brush Fore { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     public enum HorizontalLayoutMode
