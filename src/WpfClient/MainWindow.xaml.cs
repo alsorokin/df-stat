@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-
+using WpfClient.Properties;
 using Line = Snay.DFStat.Watch.Line;
 
 namespace WpfClient
@@ -60,8 +60,6 @@ namespace WpfClient
         private int logBoxItemsCap = 256;
         private int combatLogBoxItemsCap = 256;
 
-        private bool isMinorCombatLogsEnabled = true;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -71,7 +69,7 @@ namespace WpfClient
 
             Watcher.LineAdded += Watcher_LineAdded;
             Watcher.StartWatching();
-            //Watcher.ScanOnce();
+            Watcher.ScanOnce();
             AchievementTracker tracker = new(Watcher);
             tracker.ProgressPcChanged += Tracker_ProgressPcChanged;
             tracker.NewStageUnlocked += Tracker_NewStageUnlocked;
@@ -95,7 +93,15 @@ namespace WpfClient
 
         private static string FixUnicode(string input)
         {
-            return input.Replace("", "✼");
+            // "giant cave spider silk hood!"
+            // string result = input.Replace("", "✼");
+
+            // with her (�bismuth bronze shield�), bruising the muscle
+            // TODO: Fix the false trigger of the first replace
+            //result = result.Replace("�", "«");
+            //result = result.Replace("�", "»");
+
+            return input;
         }
 
         private void Tracker_NewStageUnlocked(Achievement sender)
@@ -296,7 +302,7 @@ namespace WpfClient
             if (line.Traits.Any(t => ignoredTags.Contains(t)))
                 return;
 
-            if (line.LnType == LineType.CombatMinor && !isMinorCombatLogsEnabled)
+            if (line.LnType == LineType.CombatMinor && !Settings.Default.ShowMinorCombat)
                 return;
 
             if (line.LnType == LineType.Combat || line.LnType == LineType.CombatMinor)
@@ -312,6 +318,14 @@ namespace WpfClient
         private void LogBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (ItemsControl.ContainerFromElement(LogBox, e.OriginalSource as DependencyObject) is ListBoxItem item)
+            {
+                Clipboard.SetText(((LogBoxItem)item.Content).Text);
+            }
+        }
+
+        private void CombatLogBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (ItemsControl.ContainerFromElement(CombatLogBox, e.OriginalSource as DependencyObject) is ListBoxItem item)
             {
                 Clipboard.SetText(((LogBoxItem)item.Content).Text);
             }
@@ -383,11 +397,15 @@ namespace WpfClient
             }
         }
 
-        private void EnableMinorCombatLines_Checked(object sender, RoutedEventArgs e) =>
-            isMinorCombatLogsEnabled = true;
+        private void EnableMinorCombatLines_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.Save();
+        }
 
-        private void EnableMinorCombatLines_Unchecked(object sender, RoutedEventArgs e) =>
-            isMinorCombatLogsEnabled = false;
+        private void EnableMinorCombatLines_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Settings.Default.Save();
+        }
 
         private void ChangeVerticalLayoutButton_Click(object sender, RoutedEventArgs e)
         {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using Watch;
@@ -33,20 +35,40 @@ namespace Snay.DFStat.Watch
         {
             GameLogFileWatcher = new(GameLogDirectory, GameLogFileName);
             FileStream fs = new(GameLogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            StreamReader sr = new(fs);
-            // couldn't find a better way to set the position to last line yet
-            sr.ReadToEnd();
+            int len = (int)fs.Length;
+            byte[] bits = new byte[len];
+            fs.Seek(0, SeekOrigin.End);
+            List<byte> currentBytes = new List<byte>();
 
             GameLogFileWatcher.Changed += (_, __) =>
             {
-                while (!sr.EndOfStream)
+                while (fs.Position < fs.Length)
                 {
-                    string s = sr.ReadLine();
-                    if (s != null)
+                    byte readByte = (byte)fs.ReadByte();
+                    if (readByte == 0x0A && currentBytes.Last() == 0x0D)
                     {
-                        HandleLine(s);
+                        currentBytes.RemoveAt(currentBytes.Count - 1);
+                        string line = Encoding.UTF8.GetString(currentBytes.ToArray());
+                        HandleLine(line);
+                        currentBytes.Clear();
+                    }
+                    else
+                    {
+                        if (LineHelper.AsciiToUnicodeReplacements.TryGetValue(readByte, out byte[] replacement))
+                        {
+                            currentBytes.AddRange(replacement);
+                        }
+                        else
+                        {
+                            currentBytes.Add(readByte);
+                        }
                     }
                 }
+            };
+
+            GameLogFileWatcher.Disposed += (_, __) =>
+            {
+                fs.Close();
             };
 
             GameLogFileWatcher.EnableRaisingEvents = true;
@@ -60,11 +82,32 @@ namespace Snay.DFStat.Watch
 
         public void ScanOnce()
         {
-            foreach (string line in File.ReadAllLines(this.GameLogFilePath))
+            using (FileStream fs = new FileStream(this.GameLogFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                if (line != null)
+                int len = (int)fs.Length;
+                byte[] bits = new byte[len];
+                fs.Read(bits, 0, len);
+                List<byte> currentBytes = new List<byte>();
+                for (int i = 0; i < len; i++)
                 {
-                    HandleLine(line);
+                    if (i < len - 1 && bits[i] == 0x0D && bits[i+1] == 0x0A)
+                    {
+                        string line = Encoding.UTF8.GetString(currentBytes.ToArray());
+                        HandleLine(line);
+                        currentBytes.Clear();
+                        i++;
+                    }
+                    else
+                    {
+                        if (LineHelper.AsciiToUnicodeReplacements.TryGetValue(bits[i], out byte[] replacement))
+                        {
+                            currentBytes.AddRange(replacement);
+                        }
+                        else
+                        {
+                            currentBytes.Add(bits[i]);
+                        }
+                    }
                 }
             }
         }

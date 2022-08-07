@@ -4,6 +4,15 @@ namespace Snay.DFStat.Watch
 {
     public static class LineHelper
     {
+        public static Dictionary<byte, byte[]> AsciiToUnicodeReplacements => new()
+        {
+            { 0x0F, new byte[] { 0xE2, 0x9C, 0xBC } }, // ✼
+            { 0xF0, new byte[] { 0xE2, 0x98, 0xB0 } }, // ☰
+            { 0xAE, new byte[] { 0xC2, 0xAB, } }, // «
+            { 0xAF, new byte[] { 0xC2, 0xBB, } }, // »
+            { 0x2A, new byte[] { 0xE2, 0x81, 0x8E } }, // ⁎
+        };
+
         public static Dictionary<LineType, string[]> PatternMappings => new()
         {
             // Dwarf and animal birth scan order is important
